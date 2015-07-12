@@ -154,6 +154,7 @@
     }
     else if (mode == IR_SENSOR)
     {
+        theResult = getFloatResult(inputData);
     }
     else if (mode == READ_FROM_MOTOR)
     {
