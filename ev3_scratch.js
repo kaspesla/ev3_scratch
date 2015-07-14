@@ -345,7 +345,7 @@
   {
       var freq = frequencies[tone];
       console.log("playTone " + tone + " duration: " + duration + " freq: " + freq);
-      var volume = 2;
+      var volume = 100;
       var volString = getPackedOutputHexString(volume, 1);
       var freqString = getPackedOutputHexString(freq, 2);
       var durString = getPackedOutputHexString(duration, 2);
@@ -360,6 +360,25 @@
                     }, duration);
   }
  
+ 
+ ext.playFreq = function(freq, duration, callback)
+ {
+     console.log("playFreq duration: " + duration + " freq: " + freq);
+     var volume = 100;
+     var volString = getPackedOutputHexString(volume, 1);
+     var freqString = getPackedOutputHexString(freq, 2);
+     var durString = getPackedOutputHexString(duration, 2);
+     
+     var toneCommand = createMessage(DIRECT_COMMAND_PREFIX + PLAYTONE + volString + freqString + durString);
+     
+     sendCommand(toneCommand);
+     
+     window.setTimeout(function() {
+                       driveTimer = 0;
+                       callback();
+                       }, duration);
+ }
+
  function clearDriveTimer()
  {
     if (driveTimer)
@@ -545,7 +564,8 @@
            [' ', 'stop all motors %m.breakCoast',                       'allMotorsOff',     'break'],
            ['h', 'when button pressed %m.whichInputPort',               'whenButtonPressed','1'],
            ['R', 'button pressed %m.whichInputPort',                    'readTouchSensorPort',   '1'],
-           ['w', 'play tone %m.note duration %n ms',                    'playTone',         'C5', 500],
+           ['w', 'play note %m.note duration %n ms',                    'playTone',         'C5', 500],
+           ['w', 'play frequency %n duration %n ms',                    'playFreq',         '262', 500],
            ['R', 'light sensor %m.whichInputPort %m.lightSensorMode',   'readColorSensorPort',   '1', 'color'],
            ['R', 'measure distance %m.whichInputPort',   'readDistanceSensorPort',   '1'],
            ['R', 'motor %m.motorInputMode %m.whichMotorIndividual',   'readFromMotor',   'position', 'B'],
