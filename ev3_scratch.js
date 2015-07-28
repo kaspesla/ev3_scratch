@@ -74,6 +74,9 @@
                        }, 1000);
 
     // need some way to see if connection is working, a watchdog ping or something
+  
+    // I'll see if I can figure out how the connection is working,
+    // then I'll try to help with this - Mac
     connected =true;
   }
       /*
@@ -151,6 +154,9 @@
             else
                 theResult = "none";
         }
+        else if (modeType == COLOR_RAW_RGB)  // is color_raw encoded as a string, hex, or number? Find out in the next episode of screwing around with unneeded 1990's opcode-esque networking!
+        {
+            theResult = num; //maybe? probably not, but here's hoping it's this simple.
     }
     else if (mode == IR_SENSOR)
     {
@@ -303,10 +309,31 @@
   var mode0 = "00";
   var TOUCH_SENSOR = "10";
   var COLOR_SENSOR = "1D";
+  var ULTRASONIC_SENSOR = "1E";
+  var ULTRSONIC_CM = "00";
+  var ULTRSONIC_INCH = "01";
+  var ULTRSONIC_LISTEN = "02"; //no idea
+  var ULTRSONIC_SI_CM = "03"; //nope
+  var ULTRSONIC_SI_INCH = "04"; //yeah no.
+  var ULTRSONIC_DC_CM = "05"; //nada
+  var ULTRSONIC_DC_INCH = "06"; //I'm just putting this in for the sake of knowing I didn't miss any.
+  var WHY_IS_THERE_A_GAP_HERE = "1F"; //Just so I don't think I'm missing one 
+  var GYRO_SENSOR = "20";
+  var GYRO_ANGLE = "00";
+  var GYRO_RATE = "01"; //hmm
+  var GYRO_FAST = "02"; //very descriptive, LEGO firmware writers
+  var GYRO_RATE_AND_ANGLE = "03"; //I kid you not, this is a real thing. WHYYYY?
+  var GYRO_CALIBRATION = "04";
   var IR_SENSOR = "21";
+  var IR_PROX = "00";
+  var IR_SEEKER = "01";
+  var IR_REMOTE = "02"
+  var IR_REMOTE_ADVANCE = "03"; //I have no clue what this is.
+  var IR_CALIBRATION = "05"; //Yep, no clue what some of these do. I don't think many, if any people do.
   var REFLECTED_INTENSITY = "00";
   var AMBIENT_INTENSITY = "01";
   var COLOR_VALUE = "02";
+  var COLOR_RAW_RGB = "04";
   var READ_FROM_MOTOR = "FOOBAR";
  
   
@@ -478,6 +505,7 @@
     var modeCode = AMBIENT_INTENSITY;
     if (mode == 'reflected') { modeCode = REFLECTED_INTENSITY; }
     if (mode == 'color') { modeCode = COLOR_VALUE; }
+    if (mode == 'RGBcolor') { modeCode = COLOR_RAW_RGB; }
  
     var portInt = parseInt(port) - 1;
 
@@ -576,7 +604,7 @@
   dualMotors:       ['A+D', 'B+C'],
   turnStyle:        ['forward', 'reverse', 'right', 'left'],
   breakCoast:       ['break', 'coast'],
-  lightSensorMode:  ['reflected', 'ambient', 'color'],
+  lightSensorMode:  ['reflected', 'ambient', 'color', 'RGBcolor'],
  motorInputMode: ['position', 'speed'],
   note:["C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C#4","D#4","F#4","G#4","A#4","C#5","D#5","F#5","G#5","A#5","C#6","D#6","F#6","G#6","A#6"],
   whichInputPort: ['1', '2', '3', '4'],
