@@ -243,6 +243,8 @@ function playStartUpTones()
     console.log("received: " + createHexString(inputData));
   
     var query_info = waitingQueries.shift();
+    if (!query_info || query_info.length < 3)
+      return;
     var this_is_from_port = query_info[0];
     var mode = query_info[1];
     var modeType = query_info[2];
