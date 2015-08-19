@@ -9,13 +9,6 @@
   // Cleanup function when the extension is unloaded
   ext._shutdown = function() {};
   
-  // Status reporting code
-  // Use this to report missing hardware, plugin or unsupported browser
-  ext._getStatus = function()
-  {
-    return {status: 2, msg: 'Ready'};
-  };
-  
   ext._getStatus = function()
   {
       if (!connected)
@@ -32,6 +25,7 @@
 
   
   var connected = false;
+  var connecting = false;
   var notifyConnection = false;
   var device = null;
   
@@ -54,27 +48,104 @@
   };
   
   var poller = null;
-  var watchdog = null;
+  var pingTimeout = null;
+  var waitingForPing = false;
+
   var DEBUG_NO_EV3 = false;
-  
+  var theDevice = null;
+ 
+function reconnect()
+ {
+    theDevice.open({ stopBits: 0, bitRate: 115200, ctsFlowControl: 0, parity:2, bufferSize:255 });
+    console.log('Attempting connection with ' + theDevice.id);
+    theDevice.set_receive_handler(receive_handler);
+ 
+    connecting = true;
+    testTheConnection(startupBatteryCheckCallback);
+}
+
+function startupBatteryCheckCallback(result)
+{
+   console.log("got battery level at connect: " + result);
+   
+   connected = true;
+   connecting = false;
+   
+   playStartUpTones();
+   
+   setupWatchdog();
+}
+
+function setupWatchdog()
+{
+    if (poller)
+        clearInterval(poller);
+
+   poller = setInterval(pingBatteryWatchdog, 5000);
+}
+
+function pingBatteryWatchdog()
+{
+    testTheConnection(pingBatteryCheckCallback);
+    waitingForPing = true;
+    pingTimeout = setTimeout(pingTimeOutCallback, 1000);
+}
+
+function pingTimeOutCallback()
+{
+   if (waitingForPing == true)
+   {
+     console.log("Ping timed out!");
+      if (poller)
+        clearInterval(poller);
+      
+      connected = false;
+   }
+}
+
+function pingBatteryCheckCallback(result)
+{
+   console.log("pinged battery level: " + result);
+   if (pingTimeout)
+    clearTimeout(pingTimeout);
+   waitingForPing = false;
+}
+
+
+function testTheConnection(theCallback)
+{
+   window.setTimeout(function() {
+                          readThatBatteryLevel(theCallback);
+                       }, 500);
+ }
+
+function playStartUpTones()
+{
+    var tonedelay = 1000;
+    window.setTimeout(function() {
+                          playFreqM2M(262, 100);
+                       }, tonedelay);
+
+     window.setTimeout(function() {
+                          playFreqM2M(392, 100);
+                       }, tonedelay+100);
+     
+     window.setTimeout(function() {
+                          playFreqM2M(523, 100);
+                       }, tonedelay+200);
+ }
+ 
   function tryNextDevice()
   {
     device = potentialDevices.shift();
     if (!device)
         return;
-  
+ 
+   theDevice = device;
+ 
   if (!DEBUG_NO_EV3)
   {
-    device.open({ stopBits: 0, bitRate: 115200, ctsFlowControl: 0, parity:2, bufferSize:255 });
-    console.log('Attempting connection with ' + device.id);
-    device.set_receive_handler(receive_handler);
-
-    poller = setInterval(function() {
-                       //  queryFirmware();
-                       }, 1000);
-
-    // need some way to see if connection is working, a watchdog ping or something
-    connected =true;
+    reconnect();
   }
       /*
       watchdog = setTimeout(function() {
@@ -94,7 +165,7 @@
         device.close();
     if (poller)
         clearInterval(poller);
-    connected = false;
+
     device = null;
   };
   
@@ -115,10 +186,10 @@
         return result;
   }
   
-  var waitingCallbacks = [[],[],[],[],[],[],[],[]];
+  var waitingCallbacks = [[],[],[],[],[],[],[],[], []];
   var waitingQueries = [];
-  var global_touch_pressed = [false, false, false, false,false, false, false, false];
-  var global_sensor_queried = [0, 0, 0, 0, 0, 0, 0, 0];
+  var global_touch_pressed = [false, false, false, false,false, false, false, false, false];
+  var global_sensor_queried = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   function receive_handler(data)
   {
@@ -151,7 +222,14 @@
             else
                 theResult = "none";
         }
+ /*
+        else if (modeType == COLOR_RAW_RGB)  // is color_raw encoded as a string, hex, or number?
+        {
+            theResult = num; //maybe? probably not, but here's hoping it's this simple.
+        }
+  */
     }
+    
     else if (mode == IR_SENSOR)
     {
         theResult = getFloatResult(inputData);
@@ -160,6 +238,13 @@
     {
         theResult = getFloatResult(inputData);
     }
+    else if (mode == UIREAD)
+    {
+        if (modeType == UIREAD_BATTERY)
+        {
+            theResult = inputData[5];
+        }
+     }
  
     global_touch_pressed[this_is_from_port] = theResult;
     global_sensor_queried[this_is_from_port]--;
@@ -299,20 +384,43 @@
   var PLAYTONE = "9401";
   var INPUT_DEVICE_READY_SI = "991D";
   var READ_SENSOR = "9A00";
+  var UIREAD  = "81"; // opUI_READ
+  var UIREAD_BATTERY = "12"; // GET_LBATT
  
   var mode0 = "00";
   var TOUCH_SENSOR = "10";
   var COLOR_SENSOR = "1D";
+  var ULTRASONIC_SENSOR = "1E";
+  var ULTRSONIC_CM = "00";
+  var ULTRSONIC_INCH = "01";
+  var ULTRSONIC_LISTEN = "02";
+  var ULTRSONIC_SI_CM = "03";
+  var ULTRSONIC_SI_INCH = "04";
+  var ULTRSONIC_DC_CM = "05"; 
+  var ULTRSONIC_DC_INCH = "06"; //I'm just putting this in for the sake of knowing I didn't miss any.
+  var WHY_IS_THERE_A_GAP_HERE = "1F"; //Just so I don't think I'm missing one 
+  var GYRO_SENSOR = "20";
+  var GYRO_ANGLE = "00";
+  var GYRO_RATE = "01";
+  var GYRO_FAST = "02"; //very descriptive, LEGO firmware writers
+  var GYRO_RATE_AND_ANGLE = "03"; //I kid you not, this is a real thing. WHYYYY?
+  var GYRO_CALIBRATION = "04";
   var IR_SENSOR = "21";
+  var IR_PROX = "00";
+  var IR_SEEKER = "01";
+  var IR_REMOTE = "02"
+  var IR_REMOTE_ADVANCE = "03"; //I have no clue what this is.
+  var IR_CALIBRATION = "05"; //Yep, no clue what some of these do. I don't think many, if any people do.
   var REFLECTED_INTENSITY = "00";
   var AMBIENT_INTENSITY = "01";
   var COLOR_VALUE = "02";
+  var COLOR_RAW_RGB = "04";
   var READ_FROM_MOTOR = "FOOBAR";
  
   
   function sendCommand(commandArray)
   {
-    if (connected && device)
+    if ((connected || connecting) && device)
         device.send(commandArray.buffer);
   }
   
@@ -378,7 +486,21 @@
                        callback();
                        }, duration);
  }
-
+ 
+function playFreqM2M(freq, duration)
+ {
+     console.log("playFreqM2M duration: " + duration + " freq: " + freq);
+     var volume = 100;
+     var volString = getPackedOutputHexString(volume, 1);
+     var freqString = getPackedOutputHexString(freq, 2);
+     var durString = getPackedOutputHexString(duration, 2);
+     
+     var toneCommand = createMessage(DIRECT_COMMAND_PREFIX + PLAYTONE + volString + freqString + durString);
+     
+     sendCommand(toneCommand);
+  
+ }
+ 
  function clearDriveTimer()
  {
     if (driveTimer)
@@ -478,6 +600,7 @@
     var modeCode = AMBIENT_INTENSITY;
     if (mode == 'reflected') { modeCode = REFLECTED_INTENSITY; }
     if (mode == 'color') { modeCode = COLOR_VALUE; }
+    if (mode == 'RGBcolor') { modeCode = COLOR_RAW_RGB; }
  
     var portInt = parseInt(port) - 1;
 
@@ -554,7 +677,37 @@
                                  "0160"); // result stuff
     sendCommand(readCommand);
  }
+
+ ext.readBatteryLevel = function(callback)
+ {
+   readThatBatteryLevel(callback);
+ }
  
+ function readThatBatteryLevel(callback)
+ {
+    var portInt = 8; // bogus port number
+     waitingCallbacks[portInt].push(callback);
+     if (global_sensor_queried[portInt] == 0)
+     {
+        global_sensor_queried[portInt]++;
+        UIRead(portInt, UIREAD_BATTERY);
+     }
+ }
+ 
+ ext.reconnectToDevice = function()
+ {
+    reconnect();
+ }
+ 
+ function UIRead(port, subtype)
+ {
+    waitingQueries.push([port, UIREAD, subtype]);
+ 
+    var readCommand = createMessage(DIRECT_COMMAND_REPLY_PREFIX +
+                                 UIREAD + subtype +
+                                 "60"); // result stuff
+    sendCommand(readCommand);
+ }
  
   // Block and block menu descriptions
   var descriptor = {
@@ -569,6 +722,9 @@
            ['R', 'light sensor %m.whichInputPort %m.lightSensorMode',   'readColorSensorPort',   '1', 'color'],
            ['R', 'measure distance %m.whichInputPort',   'readDistanceSensorPort',   '1'],
            ['R', 'motor %m.motorInputMode %m.whichMotorIndividual',   'readFromMotor',   'position', 'B'],
+
+       //    ['R', 'battery level',   'readBatteryLevel'],
+         //  [' ', 'reconnect', 'reconnectToDevice'],
            ],
   menus: {
   whichMotorPort:   ['A', 'B', 'C', 'D', 'A+D', 'B+C'],
