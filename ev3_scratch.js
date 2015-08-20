@@ -33,14 +33,14 @@
   var potentialDevices = [];
   ext._deviceConnected = function(dev) {
   
-  //console.log('_deviceConnected: ' + dev.id);
+   console.log('_deviceConnected: ' + dev.id);
 
   // brick's serial port must be named like tty.serialBrick7-SerialPort
   // this is how 10.10 is naming it automatically, the brick name being serialBrick7
   // the Scratch plugin is only letting us know about serial ports with names that
   // "begin with tty.usbmodem, tty.serial, or tty.usbserial" - according to khanning
   
-  if (dev.id.indexOf('/dev/tty.serialBrick') === 0 && dev.id.indexOf('-SerialPort') != -1)
+  if ((dev.id.indexOf('/dev/tty.serialBrick') === 0 && dev.id.indexOf('-SerialPort') != -1) || dev.id.indexOf('COM') === 0)
   {
       potentialDevices.push(dev);
       if (!device)
@@ -58,8 +58,22 @@
   var DEBUG_NO_EV3 = false;
   var theDevice = null;
  
+ function clearSensorStatuses()
+ {
+     var numSensorBlocks = 9;
+     waitingQueries = [];
+     for (x = 0; x < numSensorBlocks; x++)
+     {
+        waitingCallbacks[x] = [];
+        global_touch_pressed[x] = false;
+        global_sensor_queried[x] = 0;
+     }
+ }
+ 
 function reconnect()
  {
+    clearSensorStatuses();
+ 
     theDevice.open({ stopBits: 0, bitRate: 115200, ctsFlowControl: 0, parity:2, bufferSize:255 });
     console.log(timeStamp() + ': Attempting connection with ' + theDevice.id);
     theDevice.set_receive_handler(receive_handler);
@@ -115,12 +129,13 @@ function pingTimeOutCallback()
       
       connected = false;
       
-        alert("The connection was lost. Check your brick and refresh the page to reconnect. (Don't forget to save your project first!)");
-       /*if (r == true) {
+        alert("The connection to the brick was lost. Check your brick and refresh the page to reconnect. (Don't forget to save your project first!)");
+      /* if (r == true) {
          reconnect();
         } else {
          // do nothing
-        }*/
+        }
+        */
    }
  }
 
@@ -130,15 +145,23 @@ function connectionTimeOutCallback()
    {
      console.log(timeStamp() + ": Initial connection timed out");
      connecting = false;
-     
-     alert("Did not connect to a brick. Make sure the brick is:\n 1) powered on\n 2) named starting with serial\n 3) paired with this Mac\n 4) the iPhone/iPad/iPod check box is NOT checked\n\nand then try reloading the webpage.");
-  /*  if (r == true) {
-      reconnect();
-    } else {
-     // do nothing
-    }*/
+ 
+     if (potentialDevices.length == 0)
+     {
+       alert("Failed to connect to a brick.\n\nMake sure your brick is:\n 1) powered on with Bluetooth On\n 2) named starting with serial (if on a Mac)\n 3) paired with this computer\n 4) the iPhone/iPad/iPod check box is NOT checked\n 5) Do not start a connection to or from the brick in any other way. Let the Scratch plug-in handle it!\n\nand then try reloading the webpage.");
+       /*  if (r == true) {
+         reconnect();
+         } else {
+         // do nothing
+        }
+        */
+    }
+    else
+    {
+        tryNextDevice();
+    }
    }
-}
+ }
 
 function pingBatteryCheckCallback(result)
 {
@@ -236,15 +259,13 @@ function playStartUpTones()
 
   function receive_handler(data)
   {
-    if (!(connected || connecting))
-      return;
-      
     var inputData = new Uint8Array(data);
     console.log("received: " + createHexString(inputData));
+
+    if (!(connected || connecting))
+      return;
   
     var query_info = waitingQueries.shift();
-    if (!query_info || query_info.length < 3)
-      return;
     var this_is_from_port = query_info[0];
     var mode = query_info[1];
     var modeType = query_info[2];
@@ -412,7 +433,7 @@ function playStartUpTones()
     {
       return "81" + hexcouplet(uarr[0]);
     }
-    else if (lc == 2) 
+    else if (lc == 2)
     {
         return "82" + hexcouplet(uarr[0]) + hexcouplet(uarr[1]);
     }
