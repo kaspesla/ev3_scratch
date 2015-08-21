@@ -33,7 +33,7 @@
   var deviceTimeout = 0;
   ext._deviceConnected = function(dev) {
   
-   console.log('_deviceConnected: ' + dev.id);
+   console.log(timeStamp() + '_deviceConnected: ' + dev.id);
 
   // brick's serial port must be named like tty.serialBrick7-SerialPort
   // this is how 10.10 is naming it automatically, the brick name being serialBrick7
@@ -46,7 +46,7 @@
     if (potentialDevices.filter(function(e) { return e.id == dev.id; }).length == 0) {
           potentialDevices.push(dev); }
       if (!deviceTimeout)
-        deviceTimeout = setTimeout(tryNextDevice, 1000);
+        deviceTimeout = setTimeout(tryNextDevice, 5000);
   }
   };
   
@@ -72,11 +72,14 @@
      }
  }
  
+var counter = 0;
+
 function reconnect()
  {
     clearSensorStatuses();
- 
-    theDevice.open({ stopBits: 0, bitRate: 115200, ctsFlowControl: 0, parity:2, bufferSize:255 });
+    counter = 0; 
+    
+    theDevice.open({ stopBits: 0, bitRate: 57600 /*115200*/, ctsFlowControl: 0}); //, parity:2, bufferSize:255 });
     console.log(timeStamp() + ': Attempting connection with ' + theDevice.id);
     theDevice.set_receive_handler(receive_handler);
  
@@ -339,9 +342,7 @@ function playStartUpTones()
      arr[3] = inputData[8]
      return c[0];
  }
- 
-  var counter = 0;
- 
+
   // add counter and byte length encoding prefix. return Uint8Array of final message
   function createMessage(str)
   {
@@ -607,6 +608,11 @@ function playFreqM2M(freq, duration)
       var motorsOffCommand = createMessage(DIRECT_COMMAND_PREFIX + SET_MOTOR_STOP + motorBitField + howHex);
       
       sendCommand(motorsOffCommand);
+  }
+  
+  function sendNOP()
+  {
+     var nopCommand = createMessage(DIRECT_COMMAND_PREFIX + NOOP);
   }
 
   ext.steeringControl = function(ports, what, duration, callback)
