@@ -68,7 +68,6 @@
      {
         waitingCallbacks[x] = [];
         global_touch_pressed[x] = false;
-        global_ir_button_pressed[x] = false;
         global_sensor_queried[x] = 0;
      }
  }
@@ -100,9 +99,8 @@ function startupBatteryCheckCallback(result)
    connecting = false;
    
    playStartUpTones();
- 
-   // no watchdog right now.  reconnection is too flakey so there is no point
-   //  setupWatchdog();
+   
+ //  setupWatchdog();
 }
 
 function setupWatchdog()
@@ -265,7 +263,6 @@ function playStartUpTones()
   var waitingCallbacks = [[],[],[],[],[],[],[],[], []];
   var waitingQueries = [];
   var global_touch_pressed = [false, false, false, false,false, false, false, false, false];
-  var global_ir_button_pressed = [false, false, false, false,false, false, false, false, false];
   var global_sensor_queried = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   function receive_handler(data)
@@ -312,14 +309,7 @@ function playStartUpTones()
     
     else if (mode == IR_SENSOR)
     {
-        if (modeType == IR_PROX)
-            theResult = getFloatResult(inputData);
-        else if (modeType == IR_REMOTE)
-            theResult = getIRButtonNameForCode(getFloatResult(inputData));
-    }
-    else if (mode == GYRO_SENSOR)
-    {
-       theResult = getFloatResult(inputData);
+        theResult = getFloatResult(inputData);
     }
     else if (mode == READ_FROM_MOTOR)
     {
@@ -335,10 +325,8 @@ function playStartUpTones()
  
     global_touch_pressed[this_is_from_port] = theResult;
     global_sensor_queried[this_is_from_port]--;
-    global_ir_button_pressed[this_is_from_port] = theResult;
     while(callback = waitingCallbacks[this_is_from_port].shift())
     {
-        console.log("result: " + theResult);
         callback(theResult);
     }
   }
@@ -353,18 +341,6 @@ function playStartUpTones()
      arr[2] = inputData[7]
      arr[3] = inputData[8]
      return c[0];
- }
-
- function getIRButtonNameForCode(inButtonCode)
- {
-     for (var i = 0; i < IRbuttonCodes.length; i++)
-     {
-         if (inButtonCode == IRbuttonCodes[i])
-        {
-            return IRbuttonNames[i];
-         }
-     }
-    return "";
  }
 
   // add counter and byte length encoding prefix. return Uint8Array of final message
@@ -496,20 +472,20 @@ function playStartUpTones()
   var ULTRSONIC_SI_CM = "03";
   var ULTRSONIC_SI_INCH = "04";
   var ULTRSONIC_DC_CM = "05"; 
-  var ULTRSONIC_DC_INCH = "06";
-
+  var ULTRSONIC_DC_INCH = "06"; //I'm just putting this in for the sake of knowing I didn't miss any.
+  var WHY_IS_THERE_A_GAP_HERE = "1F"; //Just so I don't think I'm missing one 
   var GYRO_SENSOR = "20";
   var GYRO_ANGLE = "00";
   var GYRO_RATE = "01";
-  var GYRO_FAST = "02";
-  var GYRO_RATE_AND_ANGLE = "03";
+  var GYRO_FAST = "02"; //very descriptive, LEGO firmware writers
+  var GYRO_RATE_AND_ANGLE = "03"; //I kid you not, this is a real thing. WHYYYY?
   var GYRO_CALIBRATION = "04";
   var IR_SENSOR = "21";
   var IR_PROX = "00";
   var IR_SEEKER = "01";
   var IR_REMOTE = "02"
-  var IR_REMOTE_ADVANCE = "03";
-  var IR_CALIBRATION = "05";
+  var IR_REMOTE_ADVANCE = "03"; //I have no clue what this is.
+  var IR_CALIBRATION = "05"; //Yep, no clue what some of these do. I don't think many, if any people do.
   var REFLECTED_INTENSITY = "00";
   var AMBIENT_INTENSITY = "01";
   var COLOR_VALUE = "02";
@@ -547,9 +523,6 @@ function playStartUpTones()
   var frequencies = { "C4" : 262, "D4" : 294, "E4" : 330, "F4" : 349, "G4" : 392, "A4" : 440, "B4" : 494, "C5" : 523, "D5" : 587, "E5" : 659, "F5" : 698, "G5" : 784, "A5" : 880, "B5" : 988, "C6" : 1047, "D6" : 1175, "E6" : 1319, "F6" : 1397, "G6" : 1568, "A6" : 1760, "B6" : 1976, "C#4" : 277, "D#4" : 311, "F#4" : 370, "G#4" : 415, "A#4" : 466, "C#5" : 554, "D#5" : 622, "F#5" : 740, "G#5" : 831, "A#5" : 932, "C#6" : 1109, "D#6" : 1245, "F#6" : 1480, "G#6" : 1661, "A#6" : 1865 };
   
  var colors = [ "none", "black", "blue", "green", "yellow", "red", "white"];
- 
- var IRbuttonNames = ['Top Left', 'Bottom Left', 'Top Right', 'Bottom Right', 'Top Bar'];
- var IRbuttonCodes = [1,            2,              3,          4,              9];
  
   ext.playTone = function(tone, duration, callback)
   {
@@ -671,10 +644,7 @@ function playFreqM2M(freq, duration)
     driveCallback = callback;
     driveTimer = window.setTimeout(function()
     {
-        if (duration > 0) // allow zero duration to run motors asynchronously
-        {
-          motorsStop('coast');
-        }
+        motorsStop('coast');
         callback();
     } , duration*1000);
   }
@@ -688,15 +658,6 @@ function playFreqM2M(freq, duration)
      }
   }
  
- function readIRRemoteSensor(portInt)
- {
-    if (global_sensor_queried[portInt] == 0)
-    {
-        global_sensor_queried[portInt]++;
-        readFromSensor2(portInt, IR_SENSOR, IR_REMOTE);
-    }
- }
- 
   ext.whenButtonPressed = function(port)
   {
     if (!device || !connected)
@@ -705,18 +666,7 @@ function playFreqM2M(freq, duration)
     readTouchSensor(portInt);
     return global_touch_pressed[portInt];
   }
-
- ext.whenRemoteButtonPressed = function(IRbutton, port)
- {
-     if (!device || !connected)
-        return false;
- 
-     var portInt = parseInt(port) - 1;
-     readIRRemoteSensor(portInt);
- 
-     return (global_ir_button_pressed[portInt] == IRbutton);
- }
- 
+  
   ext.readTouchSensorPort = function(port, callback)
   {
     var portInt = parseInt(port) - 1;
@@ -742,21 +692,6 @@ function playFreqM2M(freq, duration)
     }
   }
  
-  ext.readGyroPort = function(mode, port, callback)
-  {
-    var modeCode = GYRO_ANGLE;
-    if (mode == 'rate') { modeCode = GYRO_RATE; }
- 
-    var portInt = parseInt(port) - 1;
- 
-    waitingCallbacks[portInt].push(callback);
-    if (global_sensor_queried[portInt] == 0)
-    {
-      global_sensor_queried[portInt]++;
-      readFromSensor2(portInt, GYRO_SENSOR, modeCode);
-    }
-  }
- 
   ext.readDistanceSensorPort = function(port, callback)
   {
     var portInt = parseInt(port) - 1;
@@ -765,17 +700,8 @@ function playFreqM2M(freq, duration)
     if (global_sensor_queried[portInt] == 0)
     {
       global_sensor_queried[portInt]++;
-      readFromSensor2(portInt, IR_SENSOR, IR_PROX);
+      readFromSensor2(portInt, IR_SENSOR, mode0);
     }
-  }
-  
-  ext.readRemoteButtonPort = function(port, callback)
-  {
-    var portInt = parseInt(port) - 1;
-
-    waitingCallbacks[portInt].push(callback);
- 
-    readIRRemoteSensor(portInt);
   }
  
   function readFromSensor(port, type, mode)
@@ -819,7 +745,6 @@ function playFreqM2M(freq, duration)
      }
  }
  
- // this routine is awful similar to readFromSensor2...
  function readFromAMotor(port, type, mode)
  {
  
@@ -868,18 +793,15 @@ function playFreqM2M(freq, duration)
   var descriptor = {
   blocks: [
            ['w', 'drive %m.dualMotors %m.turnStyle %n seconds',         'steeringControl',  'B+C', 'forward', 3],
-           [' ', 'start motor %m.whichMotorPort speed %n',              'allMotorsOn',      'B+C', 100],
+           [' ', 'start motor %m.whichMotorPort speed %n',                    'allMotorsOn',      'B+C', 100],
            [' ', 'stop all motors %m.breakCoast',                       'allMotorsOff',     'break'],
-           ['h', 'when button pressed on port %m.whichInputPort',       'whenButtonPressed','1'],
-           ['h', 'when IR remote %m.buttons pressed port %m.whichInputPort', 'whenRemoteButtonPressed','Top Left', '1'],
+           ['h', 'when button pressed %m.whichInputPort',               'whenButtonPressed','1'],
            ['R', 'button pressed %m.whichInputPort',                    'readTouchSensorPort',   '1'],
            ['w', 'play note %m.note duration %n ms',                    'playTone',         'C5', 500],
            ['w', 'play frequency %n duration %n ms',                    'playFreq',         '262', 500],
            ['R', 'light sensor %m.whichInputPort %m.lightSensorMode',   'readColorSensorPort',   '1', 'color'],
-           ['R', 'measure distance %m.whichInputPort',                  'readDistanceSensorPort',   '1'],
-           ['R', 'remote button %m.whichInputPort',                     'readRemoteButtonPort',   '1'],
-          // ['R', 'gyro  %m.gyroMode %m.whichInputPort',                 'readGyroPort',  'angle', '1'],
-           ['R', 'motor %m.motorInputMode %m.whichMotorIndividual',     'readFromMotor',   'position', 'B'],
+           ['R', 'measure distance %m.whichInputPort',   'readDistanceSensorPort',   '1'],
+           ['R', 'motor %m.motorInputMode %m.whichMotorIndividual',   'readFromMotor',   'position', 'B'],
 
        //    ['R', 'battery level',   'readBatteryLevel'],
        //  [' ', 'reconnect', 'reconnectToDevice'],
@@ -891,11 +813,9 @@ function playFreqM2M(freq, duration)
   turnStyle:        ['forward', 'reverse', 'right', 'left'],
   breakCoast:       ['break', 'coast'],
   lightSensorMode:  ['reflected', 'ambient', 'color'],
-  motorInputMode: ['position', 'speed'],
-  gyroMode: ['angle', 'rate'],
+ motorInputMode: ['position', 'speed'],
   note:["C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C#4","D#4","F#4","G#4","A#4","C#5","D#5","F#5","G#5","A#5","C#6","D#6","F#6","G#6","A#6"],
   whichInputPort: ['1', '2', '3', '4'],
-  buttons: IRbuttonNames,
     },
   };
 
