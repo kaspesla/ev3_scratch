@@ -196,7 +196,7 @@ Newburyport, the north shore and southern New Hampshire.">
          <div class="sqs-layout sqs-grid-12 columns-12" data-type="page" data-updated-on="1435854106718" id="page-559563e9e4b0b0384004df7a"><div class="row sqs-row"><div class="col sqs-col-12 span-12"><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-637ddfed9897650b6e08"><div class="sqs-block-content">
              <h2>EV3+Scratch Extension</h2>
              
-             <p dir="ltr">Code & Circuit has developed this ScratchX Extension to control our EV3 bricks over Bluetooth from the Mac.<br>Check out the demo video below.
+             <p dir="ltr">Code & Circuit has developed this ScratchX Extension to control our EV3 bricks over Bluetooth from Scratch.<br>Check out the demo video below.
 <p>
 <iframe width="800" height="400" src="https://www.youtube.com/embed/jOgum8tWsrI?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe></p>
             <H2> Try it out!</H2>
@@ -205,27 +205,46 @@ Newburyport, the north shore and southern New Hampshire.">
             <br>
             <uL>
                 <li> An EV3 brick </li>
-                <li> A properly configured Scratch X device plug-in on Mac (Safari or Chrome) or Windows (Chrome)</li>
+                <li> A properly configured ScratchX device plug-in on Mac (Safari or Chrome) or Windows (Chrome)</li>
             </ul>
             
             INSTRUCTIONS:
+            <br>
             <ul>  
             <li> Make sure you have installed the latest <a href="https://scratch.mit.edu/info/ext_download/">Device Plugin</a>.</li>
-            <li> To use:
+            <li> First-Time Setup:
+                
             <ol>
-              
-              <li> If on a Mac, the Brick must be re-named starting with the string "serial" before pairing so that Scratch will recognize it. Re-name a brick using the Mindstorm software before pairing it to the Mac.
-              <li> Pair the brick to the computer. 
-              <li> Once paired, <b>uncheck the iPhone/iPad/iPod checkbox</b> in the brick's Bluetooth settings.
-              <li> <i>Do not</i> manually initiate any connections to or from the brick. The Scratch Plug-in will automatically connect when the webpage loads.</li>
-              <li> Then go to this link: <a href="http://scratchx.org/?url=http://kaspesla.github.io/ev3_scratch/ev3_scratch.js">EV3 Scratch Extension</a>.
-             <Li> When the connection is successful, you will hear the brick play some happy tones.</li>
-                </ol>
+                <li> Hint: In our classroom, we paired each brick with its own laptop. The bricks and laptops are numbered, and students match the numbers before starting.
+              <li> If you're using a Mac, the Brick must first be re-named starting with the string "serial" before pairing so that Scratch will recognize it. Re-name a brick using the Mindstorms software <i>before</i> pairing it to the Mac. We named our bricks serialBrickX (where X is the number of the brick).
+              <li> Pair the brick to the computer using your computer's Bluetooth control panel. I've found that checking the iPhone/iPad/iPod checkbox on the brick before pairing makes the pairing easier.
+              <li> Once paired to the computer, <b>uncheck the iPhone/iPad/iPod checkbox</b> in the brick's Bluetooth settings.
+                <Li> You should not have to do these steps again, unless a brick crashes hard and does a full reset. If you notice the brick's name has reverted back to "EV3", it may have to be renamed and repaired.
+            </ol>
+            <li>Using the Extension:</li>
+                <ol>
+                    <li> Make sure brick is powered on first and <b>iPhone/iPad/iPod checkbox is unchecked.</b>
+                    <li> <i>Do not</i> manually initiate any connections to or from the brick. The Scratch Plug-in will automatically connect when the ScratchX webpage loads.</li>
+                    <li> Go to this link: <a href="http://scratchx.org/?url=http://kaspesla.github.io/ev3_scratch/ev3_scratch.js">EV3 Scratch Extension</a>.
+                    <li> When the connection is successful, you will hear the brick play some happy tones.</li>
+                    <li> If the connection is lost (brick was turned off, goes out of range, etc.), you must refresh the browser page to re-connect to the brick. Save your ScratchX project as an sbx file first, refresh the page, wait for the beeps, and then load the sbx file.
+                        </ol>
             </ul>
-            
+            <li> Tips: </li>
+                <ul>
+                    <li> Make sure the brick is turned on before going to the ScratchX webpage link.
+                    <li> You can double-click a brick directly in the menu in Scratch to make it trigger immediately. For example:
+                        <ul>
+                            <li> To test whether a brick is still connected, double-click the "play tone" brick in the brick menu. You should hear a tone!
+                            <li> To stop all motors quickly, double-click the "stop all motors" block.
+                            <li> To see the value of a sensor, double-click its rounded block to see the result in the little pop-over.
+                        </ul>
+                    <Li> Make sure your EV3 blocks have selected the correct motor or input port.
+                    <li> For the IR Remote block to work, the red slider on the remote must be switched to top (1) setting.
+                </ul>
             <li><a href="http://kaspesla.github.io/ev3_scratch/examples/EV3_Scratch_Examples.zip">Demo SBX files on Github</a>
             <h2>Feedback</h2>
-             <li>Send comments/feedback to <a href="http://twitter.com/massivevector">@massivevector</a></li>
+            <li>Send comments/feedback to lego@codeandcircuit.org</a></li>
              </p>
       
          </div><!-- comment the linebreak between these two elements because science
