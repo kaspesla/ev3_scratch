@@ -5,26 +5,13 @@
 // My bricks are named serialBrick1 (etc)
 // Turn off the iPod/iPhone/iPad checkbox on the EV3 Bluetooth settings after pairing or else it will not work at all
 
-function timeStamp()
-{
-    return (new Date).toISOString().replace(/z|t/gi,' ').trim();
-}
-
-// scratchX is loading our javascript file again each time a saved SBX file is opened.
-// JavaScript is weird and this causes our object to be reloaded and re-registered.
-// Prevent this using global variable theEV3Device and EV3Connected that will only initialize to null the first time they are declared.
-// This fixes a Windows bug where it would not reconnect.
-var DEBUG_NO_EV3 = false;
-var theEV3Device = theEV3Device || null;
-var EV3ScratchAlreadyLoaded = EV3ScratchAlreadyLoaded || false;
-var EV3Connected = EV3Connected || false;
-
 (function(ext) {
   // Cleanup function when the extension is unloaded
-
+  ext._shutdown = function() {};
+  
   ext._getStatus = function()
   {
-      if (!EV3Connected)
+      if (!connected)
         return { status:1, msg:'Disconnected' };
       else
         return { status:2, msg:'Connected' };
@@ -32,38 +19,35 @@ var EV3Connected = EV3Connected || false;
   
   ext._deviceRemoved = function(dev)
   {
-    console.log(timeStamp() +' Device removed');
+    console.log('Device removed');
     // Not currently implemented with serial devices
   };
 
   
+  var connected = false;
   var connecting = false;
   var notifyConnection = false;
-
+  var device = null;
   var warnedAboutBattery = false;
   var potentialDevices = [];
   var deviceTimeout = 0;
- 
-  ext._deviceConnected = function(dev)
-  {
-      console.log(timeStamp() + '_deviceConnected: ' + dev.id);
-      if (EV3Connected)
-      {
-        console.log("Already EV3Connected. Ignoring");
-      }
-      // brick's serial port must be named like tty.serialBrick7-SerialPort
-      // this is how 10.10 is naming it automatically, the brick name being serialBrick7
-      // the Scratch plugin is only letting us know about serial ports with names that
-      // "begin with tty.usbmodem, tty.serial, or tty.usbserial" - according to khanning
-      
-      if ((dev.id.indexOf('/dev/tty.serialBrick') === 0 && dev.id.indexOf('-SerialPort') != -1) || dev.id.indexOf('COM') === 0)
-      {
+  ext._deviceConnected = function(dev) {
+  
+   console.log(timeStamp() + '_deviceConnected: ' + dev.id);
 
-        if (potentialDevices.filter(function(e) { return e.id == dev.id; }).length == 0) {
-              potentialDevices.push(dev); }
-          if (!deviceTimeout)
-            deviceTimeout = setTimeout(tryNextDevice, 1000);
-      }
+  // brick's serial port must be named like tty.serialBrick7-SerialPort
+  // this is how 10.10 is naming it automatically, the brick name being serialBrick7
+  // the Scratch plugin is only letting us know about serial ports with names that
+  // "begin with tty.usbmodem, tty.serial, or tty.usbserial" - according to khanning
+  
+  if ((dev.id.indexOf('/dev/tty.serialBrick') === 0 && dev.id.indexOf('-SerialPort') != -1) || dev.id.indexOf('COM') === 0)
+  {
+
+    if (potentialDevices.filter(function(e) { return e.id == dev.id; }).length == 0) {
+          potentialDevices.push(dev); }
+      if (!deviceTimeout)
+        deviceTimeout = setTimeout(tryNextDevice, 1000);
+  }
   };
   
   var poller = null;
@@ -73,6 +57,9 @@ var EV3Connected = EV3Connected || false;
   var waitingForPing = false;
   var waitingForInitialConnection = false;
 
+  var DEBUG_NO_EV3 = false;
+  var theDevice = null;
+ 
  function clearSensorStatuses()
  {
      var numSensorBlocks = 9;
@@ -80,7 +67,8 @@ var EV3Connected = EV3Connected || false;
      for (x = 0; x < numSensorBlocks; x++)
      {
         waitingCallbacks[x] = [];
-        global_sensor_result[x] = 0;
+        global_touch_pressed[x] = false;
+        global_ir_button_pressed[x] = false;
         global_sensor_queried[x] = 0;
      }
  }
@@ -88,13 +76,13 @@ var EV3Connected = EV3Connected || false;
 var counter = 0;
 
 function reconnect()
-{
+ {
     clearSensorStatuses();
     counter = 0; 
     
-    theEV3Device.open({ stopBits: 0, bitRate: 57600 /*115200*/, ctsFlowControl: 0}); //, parity:2, bufferSize:255 });
-    console.log(timeStamp() + ': Attempting connection with ' + theEV3Device.id);
-    theEV3Device.set_receive_handler(receive_handler);
+    theDevice.open({ stopBits: 0, bitRate: 57600 /*115200*/, ctsFlowControl: 0}); //, parity:2, bufferSize:255 });
+    console.log(timeStamp() + ': Attempting connection with ' + theDevice.id);
+    theDevice.set_receive_handler(receive_handler);
  
     connecting = true;
     testTheConnection(startupBatteryCheckCallback);
@@ -108,16 +96,10 @@ function startupBatteryCheckCallback(result)
  
    waitingForInitialConnection = false;
 
-   EV3Connected = true;
+   connected = true;
    connecting = false;
    
    playStartUpTones();
- 
-     if (result < 11 && !warnedAboutBattery)
-     {
-       alert("Your battery is getting low.");
-       warnedAboutBattery = true;
-     }
  
    // no watchdog right now.  reconnection is too flakey so there is no point
    //  setupWatchdog();
@@ -129,6 +111,11 @@ function setupWatchdog()
         clearInterval(poller);
 
    poller = setInterval(pingBatteryWatchdog, 10000);
+}
+ 
+function timeStamp()
+{
+  return (new Date).toISOString().replace(/z|t/gi,' ').trim();
 }
 
 function pingBatteryWatchdog()
@@ -147,7 +134,7 @@ function pingTimeOutCallback()
       if (poller)
         clearInterval(poller);
       
-      EV3Connected = false;
+      connected = false;
       
         alert("The connection to the brick was lost. Check your brick and refresh the page to reconnect. (Don't forget to save your project first!)");
       /* if (r == true) {
@@ -226,30 +213,36 @@ function playStartUpTones()
     potentialDevices.sort((function(a, b){return b.id.localeCompare(a.id)}));
 
     console.log("devices: " + potentialDevices);
-    var device = potentialDevices.shift();
+    device = potentialDevices.shift();
     if (!device)
         return;
  
-    theEV3Device = device;
+   theDevice = device;
  
-    if (!DEBUG_NO_EV3)
-    {
-        reconnect();
-    }
+  if (!DEBUG_NO_EV3)
+  {
+    reconnect();
+  }
+      /*
+      watchdog = setTimeout(function() {
+                            clearInterval(poller);
+                            poller = null;
+                            device.set_receive_handler(null);
+                            device.close();
+                            device = null;
+                            tryNextDevice();
+                            }, 5000);
+       */
   }
   
   ext._shutdown = function()
   {
-    console.log(timeStamp() +' SHUTDOWN: ' + theEV3Device.id);
-/*
-    if (theEV3Device)
-        theEV3Device.close();
+    if (device && connected)
+        device.close();
     if (poller)
         clearInterval(poller);
-    EV3Connected = false;
-    theEV3Device = null;
- */
- 
+
+    device = null;
   };
   
   // create hex string from bytes
@@ -271,21 +264,19 @@ function playStartUpTones()
   
   var waitingCallbacks = [[],[],[],[],[],[],[],[], []];
   var waitingQueries = [];
-  var global_sensor_result =  [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  var global_touch_pressed = [false, false, false, false,false, false, false, false, false];
+  var global_ir_button_pressed = [false, false, false, false,false, false, false, false, false];
   var global_sensor_queried = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   function receive_handler(data)
   {
     var inputData = new Uint8Array(data);
-    console.log(timeStamp() + " received: " + createHexString(inputData));
+    console.log("received: " + createHexString(inputData));
 
-    if (!(EV3Connected || connecting))
+    if (!(connected || connecting))
       return;
   
     var query_info = waitingQueries.shift();
-    if (!query_info)
-        return;
- 
     var this_is_from_port = query_info[0];
     var mode = query_info[1];
     var modeType = query_info[2];
@@ -311,6 +302,12 @@ function playStartUpTones()
             else
                 theResult = "none";
         }
+ /*
+        else if (modeType == COLOR_RAW_RGB)  // is color_raw encoded as a string, hex, or number?
+        {
+            theResult = num; //maybe? probably not, but here's hoping it's this simple.
+        }
+  */
     }
     
     else if (mode == IR_SENSOR)
@@ -336,8 +333,9 @@ function playStartUpTones()
         }
      }
  
-    global_sensor_result[this_is_from_port] = theResult;
+    global_touch_pressed[this_is_from_port] = theResult;
     global_sensor_queried[this_is_from_port]--;
+    global_ir_button_pressed[this_is_from_port] = theResult;
     while(callback = waitingCallbacks[this_is_from_port].shift())
     {
         console.log("result: " + theResult);
@@ -521,15 +519,15 @@ function playStartUpTones()
   
   function sendCommand(commandArray)
   {
-    if ((EV3Connected || connecting) && theEV3Device)
-        theEV3Device.send(commandArray.buffer);
+    if ((connected || connecting) && device)
+        device.send(commandArray.buffer);
   }
   
   ext.allMotorsOn = function(which, power)
   {
     clearDriveTimer();
 
-    console.log("motor " + which + " power: " + power);
+   console.log("motor " + which + " power: " + power);
   
     motor(which, power);
   }
@@ -701,22 +699,22 @@ function playFreqM2M(freq, duration)
  
   ext.whenButtonPressed = function(port)
   {
-    if (!theEV3Device || !EV3Connected)
+    if (!device || !connected)
         return false;
     var portInt = parseInt(port) - 1;
     readTouchSensor(portInt);
-    return global_sensor_result[portInt];
+    return global_touch_pressed[portInt];
   }
 
  ext.whenRemoteButtonPressed = function(IRbutton, port)
  {
-     if (!theEV3Device || !EV3Connected)
+     if (!device || !connected)
         return false;
  
      var portInt = parseInt(port) - 1;
      readIRRemoteSensor(portInt);
  
-     return (global_sensor_result[portInt] == IRbutton);
+     return (global_ir_button_pressed[portInt] == IRbutton);
  }
  
   ext.readTouchSensorPort = function(port, callback)
@@ -735,42 +733,14 @@ function playFreqM2M(freq, duration)
     if (mode == 'RGBcolor') { modeCode = COLOR_RAW_RGB; }
  
     var portInt = parseInt(port) - 1;
+
     waitingCallbacks[portInt].push(callback);
-
-    readFromColorSensor(portInt, modeCode);
-  }
- 
- function readFromColorSensor(portInt, modeCode)
- {
-     if (global_sensor_queried[portInt] == 0)
-     {
-        global_sensor_queried[portInt]++;
-        readFromSensor2(portInt, COLOR_SENSOR, modeCode);
-     }
- }
- 
- var lineCheckingInterval = 0;
-
- ext.waitUntilDarkLinePort = function(port, callback)
- {
-    if (lineCheckingInterval)
-        clearInterval(lineCheckingInterval);
-    lineCheckingInterval = 0;
-    var modeCode = REFLECTED_INTENSITY;
-    var portInt = parseInt(port) - 1;
-    global_sensor_result[portInt] = -1;
- 
-    lineCheckingInterval = window.setInterval(function()
+    if (global_sensor_queried[portInt] == 0)
     {
-        readFromColorSensor(portInt, modeCode);
-         if (global_sensor_result[portInt] < 25 && global_sensor_result[portInt] >= 0)    // darkness or just not reflection (air)
-         {
-                clearInterval(lineCheckingInterval);
-                lineCheckingInterval = 0;
-                callback();
-         }
-    }, 5);
- }
+      global_sensor_queried[portInt]++;
+      readFromSensor2(portInt, COLOR_SENSOR, modeCode);
+    }
+  }
  
   ext.readGyroPort = function(mode, port, callback)
   {
@@ -906,7 +876,6 @@ function playFreqM2M(freq, duration)
            ['w', 'play note %m.note duration %n ms',                    'playTone',         'C5', 500],
            ['w', 'play frequency %n duration %n ms',                    'playFreq',         '262', 500],
            ['R', 'light sensor %m.whichInputPort %m.lightSensorMode',   'readColorSensorPort',   '1', 'color'],
-          // ['w', 'wait until light sensor %m.whichInputPort detects black line',   'waitUntilDarkLinePort',   '1'],
            ['R', 'measure distance %m.whichInputPort',                  'readDistanceSensorPort',   '1'],
            ['R', 'remote button %m.whichInputPort',                     'readRemoteButtonPort',   '1'],
           // ['R', 'gyro  %m.gyroMode %m.whichInputPort',                 'readGyroPort',  'angle', '1'],
@@ -932,8 +901,6 @@ function playFreqM2M(freq, duration)
 
   var serial_info = {type: 'serial'};
   ScratchExtensions.register('EV3 Control', descriptor, ext, serial_info);
- console.log("EV3ScratchAlreadyLoaded: " + EV3ScratchAlreadyLoaded);
- EV3ScratchAlreadyLoaded = true;
-  console.log(timeStamp() + ' registered extension. theEV3Device:' + theEV3Device);
- })({});
+  console.log('registered: ');
+})({});
 
