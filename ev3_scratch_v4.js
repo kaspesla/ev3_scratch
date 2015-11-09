@@ -18,7 +18,6 @@ var DEBUG_NO_EV3 = false;
 var theEV3Device = theEV3Device || null;
 var EV3ScratchAlreadyLoaded = EV3ScratchAlreadyLoaded || false;
 var EV3Connected = EV3Connected || false;
-var potentialEV3Devices = potentialEV3Devices || [];
 
 (function(ext) {
   // Cleanup function when the extension is unloaded
@@ -40,8 +39,9 @@ var potentialEV3Devices = potentialEV3Devices || [];
   
   var connecting = false;
   var notifyConnection = false;
-  var potentialDevices = []; // copy of the list
+
   var warnedAboutBattery = false;
+  var potentialDevices = [];
   var deviceTimeout = 0;
  
   ext._deviceConnected = function(dev)
@@ -59,20 +59,12 @@ var potentialEV3Devices = potentialEV3Devices || [];
       if ((dev.id.indexOf('/dev/tty.serialBrick') === 0 && dev.id.indexOf('-SerialPort') != -1) || dev.id.indexOf('COM') === 0)
       {
 
-        if (potentialEV3Devices.filter(function(e) { return e.id == dev.id; }).length == 0) {
-              potentialEV3Devices.push(dev); }
- 
+        if (potentialDevices.filter(function(e) { return e.id == dev.id; }).length == 0) {
+              potentialDevices.push(dev); }
           if (!deviceTimeout)
-            deviceTimeout = setTimeout(tryAllDevices, 1000);
+            deviceTimeout = setTimeout(tryNextDevice, 1000);
       }
   };
- 
- function tryAllDevices()
- {
-    potentialDevices = potentialEV3Devices.slice(0);
-    // start recursive loop
-    tryNextDevice();
- }
   
   var poller = null;
   var pingTimeout = null;
@@ -95,7 +87,7 @@ var potentialEV3Devices = potentialEV3Devices || [];
  
 var counter = 0;
 
-function tryToConnect()
+function reconnect()
 {
     clearSensorStatuses();
     counter = 0; 
@@ -127,16 +119,8 @@ function startupBatteryCheckCallback(result)
        warnedAboutBattery = true;
      }
  
-     setupWatchdog();
- 
-     if (deferredCommandArray)
-     {
-        var tempCommand = deferredCommandArray;
-        deferredCommandArray = null;
-        window.setTimeout(function() {
-                  sendCommand(tempCommand);
-                   }, 2500);
-     }
+   // no watchdog right now.  reconnection is too flakey so there is no point
+   //  setupWatchdog();
 }
 
 function setupWatchdog()
@@ -165,7 +149,7 @@ function pingTimeOutCallback()
       
       EV3Connected = false;
       
-    //    alert("The connection to the brick was lost. Check your brick and refresh the page to reconnect. (Don't forget to save your project first!)");
+        alert("The connection to the brick was lost. Check your brick and refresh the page to reconnect. (Don't forget to save your project first!)");
       /* if (r == true) {
          reconnect();
         } else {
@@ -184,16 +168,13 @@ function connectionTimeOutCallback()
  
      if (potentialDevices.length == 0)
      {
-        console.log(timeStamp() + ": Tried all devices with no luck.");
- 
-     //  alert("Failed to connect to a brick.\n\nMake sure your brick is:\n 1) powered on with Bluetooth On\n 2) named starting with serial (if on a Mac)\n 3) paired with this computer\n 4) the iPhone/iPad/iPod check box is NOT checked\n 5) Do not start a connection to or from the brick in any other way. Let the Scratch plug-in handle it!\n\nand then try reloading the webpage.");
+       alert("Failed to connect to a brick.\n\nMake sure your brick is:\n 1) powered on with Bluetooth On\n 2) named starting with serial (if on a Mac)\n 3) paired with this computer\n 4) the iPhone/iPad/iPod check box is NOT checked\n 5) Do not start a connection to or from the brick in any other way. Let the Scratch plug-in handle it!\n\nand then try reloading the webpage.");
        /*  if (r == true) {
          reconnect();
          } else {
          // do nothing
         }
         */
-        theEV3Device = null;
     }
     else
     {
@@ -253,7 +234,7 @@ function playStartUpTones()
  
     if (!DEBUG_NO_EV3)
     {
-        tryToConnect();
+        reconnect();
     }
   }
   
@@ -466,21 +447,19 @@ function playStartUpTones()
   // int bytes using weird serialization method
   function getPackedOutputHexString(num, lc)
   {
-    // nonsensical unsigned byte packing. see cOutputPackParam in c_output-c in EV3 firmware
-    var a = new ArrayBuffer(4);
+    // f-ed up nonsensical unsigned bit packing. see cOutputPackParam in c_output-c in EV3 firmware
+    var a = new ArrayBuffer(2);
     var sarr = new Int8Array(a);
     var uarr = new Uint8Array(a);
   
     sarr[0] = num & 0x000000FF;
     sarr[1] = (num >> 8) & 0x000000FF;
-    sarr[2] = (num >> 16) & 0x000000FF;
-    sarr[3] = (num >> 24) & 0x000000FF;
 
     if (lc == 0)
     {
-        var bits = uarr[0];
-        bits &= 0x0000003F;
-        return hexcouplet(bits);
+        var powerbits = uarr[0];
+        powerbits &= 0x0000003F;
+        return hexcouplet(powerbits);
     }
     else if (lc == 1)
     {
@@ -490,11 +469,7 @@ function playStartUpTones()
     {
         return "82" + hexcouplet(uarr[0]) + hexcouplet(uarr[1]);
     }
-    else if (lc == 3)
-    {
-        return "83" + hexcouplet(uarr[0]) + hexcouplet(uarr[1]) + hexcouplet(uarr[2]) + hexcouplet(uarr[3]);
-    }
-     
+
     return "00";
   }
   
@@ -506,7 +481,6 @@ function playStartUpTones()
   var SET_MOTOR_SPEED = "A400";
   var SET_MOTOR_STOP = "A300";
   var SET_MOTOR_START = "A600";
-  var SET_MOTOR_STEP_SPEED = "AC00";
   var NOOP = "0201";
   var PLAYTONE = "9401";
   var INPUT_DEVICE_READY_SI = "991D";
@@ -544,98 +518,34 @@ function playStartUpTones()
   var COLOR_RAW_RGB = "04";
   var READ_FROM_MOTOR = "FOOBAR";
  
- 
-  var deferredCommandArray = null;
- 
+  
   function sendCommand(commandArray)
   {
     if ((EV3Connected || connecting) && theEV3Device)
-    {
         theEV3Device.send(commandArray.buffer);
-    }
-    else
-    {
-       deferredCommandArray = commandArray;
-       if (theEV3Device && !connecting)
-       {
-         tryToConnect(); // try to connect
-       }
-       else if (!connecting)
-       {
-         tryAllDevices(); // try device list again
-       }
- 
-    }
   }
   
-  ext.startMotors = function(which, speed)
+  ext.allMotorsOn = function(which, power)
   {
     clearDriveTimer();
 
-    console.log("motor " + which + " speed: " + speed);
+    console.log("motor " + which + " power: " + power);
   
-    motor(which, speed);
+    motor(which, power);
   }
- 
- function capSpeed(speed)
- {
-    if (speed > 100) { speed = 100; }
-    if (speed < -100) { speed = -100; }
-    return speed;
-  }
- 
- ext.motorDegrees = function(which, speed, degrees, howStop)
- {
-     speed = capSpeed(speed);
-
-   var motorBitField = getMotorBitsHexString(which);
-   var speedBits = getPackedOutputHexString(speed, 1);
-   var stepRampUpBits = getPackedOutputHexString(0, 3);
-   var stepConstantBits = getPackedOutputHexString(degrees, 3);
-   var stepRampDownBits = getPackedOutputHexString(0, 3);
-   var howHex = howStopHex(howStop);
-   
-   var motorsCommand = createMessage(DIRECT_COMMAND_PREFIX + SET_MOTOR_STEP_SPEED + motorBitField + speedBits
-                                     + stepRampUpBits + stepConstantBits + stepRampDownBits + howHex
-                                     + SET_MOTOR_START + motorBitField);
- 
-   sendCommand(motorsCommand);
- }
- 
-  function motor(which, speed)
+  
+  function motor(which, power)
   {
-      speed = capSpeed(speed);
-     var motorBitField = getMotorBitsHexString(which);
-     
-     var speedBits = getPackedOutputHexString(speed, 1);
-     
-     var motorsOnCommand = createMessage(DIRECT_COMMAND_PREFIX + SET_MOTOR_SPEED + motorBitField + speedBits + SET_MOTOR_START + motorBitField);
-     
-     sendCommand(motorsOnCommand);
+    var motorBitField = getMotorBitsHexString(which);
+
+    var powerBits = getPackedOutputHexString(power, 1);
+
+    var motorsOnCommand = createMessage(DIRECT_COMMAND_PREFIX + SET_MOTOR_SPEED + motorBitField + powerBits + SET_MOTOR_START + motorBitField);
+  
+    sendCommand(motorsOnCommand);
   }
 
-  function motor2(which, speed)
-  {
-      speed = capSpeed(speed);
-      var p =  which.split("+");
- 
-     var motorBitField1 = getMotorBitsHexString(p[0]);
-     var motorBitField2 = getMotorBitsHexString(p[1]);
-     var motorBitField = getMotorBitsHexString(which);
- 
-     var speedBits1 = getPackedOutputHexString(speed, 1);
-     var speedBits2 = getPackedOutputHexString(speed * -1, 1);
- 
-     var motorsOnCommand = createMessage(DIRECT_COMMAND_PREFIX
-                                         + SET_MOTOR_SPEED + motorBitField1 + speedBits1
-                                         + SET_MOTOR_SPEED + motorBitField2 + speedBits2
-                                         
-                                         + SET_MOTOR_START + motorBitField);
-     
-     sendCommand(motorsOnCommand);
-  }
-
-
+  
   var frequencies = { "C4" : 262, "D4" : 294, "E4" : 330, "F4" : 349, "G4" : 392, "A4" : 440, "B4" : 494, "C5" : 523, "D5" : 587, "E5" : 659, "F5" : 698, "G5" : 784, "A5" : 880, "B5" : 988, "C6" : 1047, "D6" : 1175, "E6" : 1319, "F6" : 1397, "G6" : 1568, "A6" : 1760, "B6" : 1976, "C#4" : 277, "D#4" : 311, "F#4" : 370, "G#4" : 415, "A#4" : 466, "C#5" : 554, "D#5" : 622, "F#5" : 740, "G#5" : 831, "A#5" : 932, "C#6" : 1109, "D#6" : 1245, "F#6" : 1480, "G#6" : 1661, "A#6" : 1865 };
   
  var colors = [ "none", "black", "blue", "green", "yellow", "red", "white"];
@@ -714,21 +624,15 @@ function playFreqM2M(freq, duration)
  var driveTimer = 0;
  driveCallback = 0;
  
-function howStopHex(how)
-{
-    if (how == 'break')
-        return '01';
-    else
-        return '00';
-}
-                                                                            
   function motorsStop(how)
   {
       console.log("motorsStop");
 
       var motorBitField = getMotorBitsHexString("all");
 
-      var howHex = howStopHex(how);
+      var howHex = '00';
+      if (how == 'break')
+         howHex = '01';
       
       var motorsOffCommand = createMessage(DIRECT_COMMAND_PREFIX + SET_MOTOR_STOP + motorBitField + howHex);
       
@@ -743,23 +647,29 @@ function howStopHex(how)
   ext.steeringControl = function(ports, what, duration, callback)
   {
     clearDriveTimer();
-    var defaultSpeed = 50;
+    var defaultPower = 50;
     if (what == 'forward')
     {
-        motor(ports, defaultSpeed);
+        motor(ports, defaultPower);
     }
     else if (what == 'reverse')
     {
-        motor(ports, -1 * defaultSpeed);
+        motor(ports, -1 * defaultPower);
     }
-     else if (what == 'right')
-     {
-       motor2(ports, defaultSpeed);
-     }
-     else if (what == 'left')
-     {
-       motor2(ports, -1 * defaultSpeed);
-     }
+    else
+    {
+        var p =  ports.split("+");
+        if (what == 'left')
+        {
+            motor(p[0], -1 * defaultPower);
+            motor(p[1],  defaultPower);
+        }
+        else if (what == 'right')
+         {
+         motor(p[1], -1 * defaultPower);
+         motor(p[0],  defaultPower);
+         }
+    }
     driveCallback = callback;
     driveTimer = window.setTimeout(function()
     {
@@ -971,7 +881,7 @@ function howStopHex(how)
  
  ext.reconnectToDevice = function()
  {
-    tryAllDevices();
+    reconnect();
  }
  
  function UIRead(port, subtype)
@@ -988,8 +898,7 @@ function howStopHex(how)
   var descriptor = {
   blocks: [
            ['w', 'drive %m.dualMotors %m.turnStyle %n seconds',         'steeringControl',  'B+C', 'forward', 3],
-           [' ', 'start motor %m.whichMotorPort speed %n',              'startMotors',      'B+C', 100],
-           [' ', 'rotate motor %m.whichMotorPort speed %n by %n degrees then %m.breakCoast',              'motorDegrees',      'A', 100, 360, 'break'],
+           [' ', 'start motor %m.whichMotorPort speed %n',              'allMotorsOn',      'B+C', 100],
            [' ', 'stop all motors %m.breakCoast',                       'allMotorsOff',     'break'],
            ['h', 'when button pressed on port %m.whichInputPort',       'whenButtonPressed','1'],
            ['h', 'when IR remote %m.buttons pressed port %m.whichInputPort', 'whenRemoteButtonPressed','Top Left', '1'],
@@ -997,7 +906,7 @@ function howStopHex(how)
            ['w', 'play note %m.note duration %n ms',                    'playTone',         'C5', 500],
            ['w', 'play frequency %n duration %n ms',                    'playFreq',         '262', 500],
            ['R', 'light sensor %m.whichInputPort %m.lightSensorMode',   'readColorSensorPort',   '1', 'color'],
-       //    ['w', 'wait until light sensor %m.whichInputPort detects black line',   'waitUntilDarkLinePort',   '1'],
+          // ['w', 'wait until light sensor %m.whichInputPort detects black line',   'waitUntilDarkLinePort',   '1'],
            ['R', 'measure distance %m.whichInputPort',                  'readDistanceSensorPort',   '1'],
            ['R', 'remote button %m.whichInputPort',                     'readRemoteButtonPort',   '1'],
           // ['R', 'gyro  %m.gyroMode %m.whichInputPort',                 'readGyroPort',  'angle', '1'],
@@ -1022,9 +931,6 @@ function howStopHex(how)
   };
 
   var serial_info = {type: 'serial'};
-
- // should we even call register again if already loaded? seems to work.
-
   ScratchExtensions.register('EV3 Control', descriptor, ext, serial_info);
  console.log("EV3ScratchAlreadyLoaded: " + EV3ScratchAlreadyLoaded);
  EV3ScratchAlreadyLoaded = true;
