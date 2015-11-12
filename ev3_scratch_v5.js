@@ -20,25 +20,6 @@ var EV3ScratchAlreadyLoaded = EV3ScratchAlreadyLoaded || false;
 var EV3Connected = EV3Connected || false;
 var potentialEV3Devices = potentialEV3Devices || [];
 
-var waitingCallbacks = waitingCallbacks || [[],[],[],[],[],[],[],[], []];
-var waitingQueries = waitingQueries || [];
-var global_sensor_result = global_sensor_result || [0, 0, 0, 0, 0, 0, 0, 0, 0];
-var global_sensor_queried = global_sensor_queried || [0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-var connecting = connecting || false;
-var notifyConnection = notifyConnection|| false;
-var potentialDevices = potentialDevices || []; // copy of the list
-var warnedAboutBattery = warnedAboutBattery || false;
-var deviceTimeout = deviceTimeout || 0;
-var counter = counter || 0;
-var poller = poller || null;
-var pingTimeout = pingTimeout || null;
-var connectionTimeout = connectionTimeout || null;
-
-var waitingForPing = waitingForPing || false;
-var waitingForInitialConnection = waitingForInitialConnection || false;
-
-
 (function(ext) {
   // Cleanup function when the extension is unloaded
 
@@ -57,6 +38,11 @@ var waitingForInitialConnection = waitingForInitialConnection || false;
   };
 
   
+  var connecting = false;
+  var notifyConnection = false;
+  var potentialDevices = []; // copy of the list
+  var warnedAboutBattery = false;
+  var deviceTimeout = 0;
  
   ext._deviceConnected = function(dev)
   {
@@ -87,6 +73,13 @@ var waitingForInitialConnection = waitingForInitialConnection || false;
     // start recursive loop
     tryNextDevice();
  }
+  
+  var poller = null;
+  var pingTimeout = null;
+  var connectionTimeout = null;
+  
+  var waitingForPing = false;
+  var waitingForInitialConnection = false;
 
  function clearSensorStatuses()
  {
@@ -100,6 +93,7 @@ var waitingForInitialConnection = waitingForInitialConnection || false;
      }
  }
  
+var counter = 0;
 
 function tryToConnect()
 {
@@ -113,7 +107,7 @@ function tryToConnect()
     connecting = true;
     testTheConnection(startupBatteryCheckCallback);
     waitingForInitialConnection = true;
-    connectionTimeout = setTimeout(connectionTimeOutCallback, 5000);
+    connectionTimeout = setTimeout(connectionTimeOutCallback, 3000);
 }
 
 function startupBatteryCheckCallback(result)
@@ -265,11 +259,7 @@ function playStartUpTones()
   
   ext._shutdown = function()
   {
-    console.log(timeStamp() +' SHUTDOWN: ' + ((theEV3Device) ? theEV3Device.id : "null"));
-
-//    if (poller)
-  //      clearInterval(poller);
-
+    console.log(timeStamp() +' SHUTDOWN: ' + theEV3Device.id);
 /*
     if (theEV3Device)
         theEV3Device.close();
@@ -298,7 +288,10 @@ function playStartUpTones()
         return result;
   }
   
-
+  var waitingCallbacks = [[],[],[],[],[],[],[],[], []];
+  var waitingQueries = [];
+  var global_sensor_result =  [0, 0, 0, 0, 0, 0, 0, 0, 0];
+  var global_sensor_queried = [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   function receive_handler(data)
   {
@@ -366,7 +359,7 @@ function playStartUpTones()
     global_sensor_queried[this_is_from_port]--;
     while(callback = waitingCallbacks[this_is_from_port].shift())
     {
-        console.log(timeStamp() + " result: " + theResult);
+        console.log("result: " + theResult);
         callback(theResult);
     }
   }
@@ -420,7 +413,7 @@ function playStartUpTones()
         mess[(i / 2) + 4] = window.parseInt(str.substr(i, 2), 16);
       }
   
-     console.log(timeStamp() + " sending: " + createHexString(mess));
+     console.log("sending: " + createHexString(mess));
 
       return mess;
   }
@@ -1028,11 +1021,13 @@ function howStopHex(how)
     },
   };
 
-   var serial_info = {type: 'serial'};
-   ScratchExtensions.register('EV3 Control', descriptor, ext, serial_info);
-   console.log(timeStamp() + ' registered extension. theEV3Device:' + theEV3Device);
- 
+  var serial_info = {type: 'serial'};
+
+ // should we even call register again if already loaded? seems to work.
+
+  ScratchExtensions.register('EV3 Control', descriptor, ext, serial_info);
  console.log("EV3ScratchAlreadyLoaded: " + EV3ScratchAlreadyLoaded);
  EV3ScratchAlreadyLoaded = true;
+  console.log(timeStamp() + ' registered extension. theEV3Device:' + theEV3Device);
  })({});
 
