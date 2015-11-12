@@ -133,7 +133,7 @@ function startupBatteryCheckCallback(result)
        warnedAboutBattery = true;
      }
  
-     setupWatchdog();
+    // setupWatchdog();
  
      if (deferredCommandArray)
      {
