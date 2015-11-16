@@ -70,7 +70,7 @@ var waitingForInitialConnection = waitingForInitialConnection || false;
       // the Scratch plugin is only letting us know about serial ports with names that
       // "begin with tty.usbmodem, tty.serial, or tty.usbserial" - according to khanning
       
-      if ((dev.id.indexOf('/dev/tty.serialBrick') === 0 && dev.id.indexOf('-SerialPort') != -1) || dev.id.indexOf('COM') === 0)
+      if ((dev.id.indexOf('/dev/tty.serial') === 0 && dev.id.indexOf('-SerialPort') != -1) || dev.id.indexOf('COM') === 0)
       {
 
         if (potentialEV3Devices.filter(function(e) { return e.id == dev.id; }).length == 0) {
