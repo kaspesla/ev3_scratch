@@ -208,26 +208,37 @@ Newburyport, the north shore and southern New Hampshire.">
             
             INSTRUCTIONS:
             <br>
-            <ul>  
+            <ol>
             <li> Make sure you have installed the latest <a href="https://scratch.mit.edu/info/ext_download/">Device Plugin</a>.</li>
             <li> First-Time Setup:
                 
-            <ol>
+            <ol type="a">
                 <li> Hint: In our classroom, we paired each brick with its own laptop. The bricks and laptops are numbered, and students match the numbers before starting.
-              <li> If you're using a Mac, the Brick must first be re-named starting with the string "serial" before pairing so that Scratch will recognize it. Re-name a brick using the Mindstorms software <i>before</i> pairing it to the Mac. We named our bricks serialBrickX (where X is the number of the brick).
+              <li> If you're using a Mac, the Brick must first be re-named starting with the string "serial" (in lowercase) before pairing so that Scratch will recognize it. Re-name a brick using the Mindstorms software <i>before</i> pairing it to the Mac. We named our bricks serialBrickX (where X is the number of the brick).
+              <Ul>
+              (For Mac users) If you paired the brick before renaming it, you will have the reset your bluetooth cache using these steps:
+              <ol>
+              <li> Turn off Bluetooth on the Mac.
+              <li> Trash /Library/Preferences/com.apple.Bluetooth.plist (this is the main Library, not the user Library.)
+              <li> Reboot
+              <li> Re-enable Bluetooth.
+              <li> Pair to the brick using the steps below only once you see that it’s named starting with serial.
+              </oL>
+                </Ul>
+              
               <li> Pair the brick to the computer using your computer's Bluetooth control panel. I've found that checking the iPhone/iPad/iPod checkbox on the brick before pairing makes the pairing easier.
               <li> Once paired to the computer, <b>uncheck the iPhone/iPad/iPod checkbox</b> in the brick's Bluetooth settings.
                 <Li> You should not have to do these steps again, unless a brick crashes hard and does a full reset. If you notice the brick's name has reverted back to "EV3", it may have to be renamed and repaired.
             </ol>
             <li>Using the Extension:</li>
-                <ol>
+                <ol type="a">
                     <li> Make sure brick is powered on first and <b>iPhone/iPad/iPod checkbox is unchecked.</b>
                     <li> <i>Do not</i> manually initiate any connections to or from the brick. The Scratch Plug-in will automatically connect when the ScratchX webpage loads.</li>
-                    <li> Go to this link: <a href="http://scratchx.org/?url=http://kaspesla.github.io/ev3_scratch/ev3_scratch.js">EV3 Scratch Extension</a>.
+                    <li> Go to this link using Safari (Mac) or IE (Windows): <a href="http://scratchx.org/?url=http://kaspesla.github.io/ev3_scratch/ev3_scratch.js">EV3 Scratch Extension</a>. We have not had any luck with Chrome.
                     <li> When the connection is successful, you will hear the brick play some happy tones.</li>
                     <li> If the connection is lost (brick was turned off, goes out of range, etc.), you must refresh the browser page to re-connect to the brick. Save your ScratchX project as an sbx file first, refresh the page, wait for the beeps, and then load the sbx file.
                         </ol>
-            </ul>
+            </ol>
             <li> Tips: </li>
                 <ul>
                     <li> Make sure the brick is turned on before going to the ScratchX webpage link.
