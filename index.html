@@ -213,22 +213,28 @@ Newburyport, the north shore and southern New Hampshire.">
             <li> First-Time Setup:
                 
             <ol type="a">
-                <li> Hint: In our classroom, we paired each brick with its own laptop. The bricks and laptops are numbered, and students match the numbers before starting.
-              <li> If you're using a Mac, the Brick must first be re-named starting with the string "serial" (in lowercase) before pairing so that Scratch will recognize it. Re-name a brick using the Mindstorms software <i>before</i> pairing it to the Mac. We named our bricks serialBrickX (where X is the number of the brick).
-              <Ul>
-              (For Mac users) If you paired the brick before renaming it, you will have the reset your bluetooth cache using these steps:
-              <ol>
-              <li> Turn off Bluetooth on the Mac.
-              <li> Trash /Library/Preferences/com.apple.Bluetooth.plist (this is the main Library, not the user Library.)
-              <li> Reboot
-              <li> Re-enable Bluetooth.
-              <li> Pair to the brick using the steps below only once you see that it’s named starting with serial.
-              </oL>
-                </Ul>
-              
-              <li> Pair the brick to the computer using your computer's Bluetooth control panel. I've found that checking the iPhone/iPad/iPod checkbox on the brick before pairing makes the pairing easier.
-              <li> Once paired to the computer, <b>uncheck the iPhone/iPad/iPod checkbox</b> in the brick's Bluetooth settings.
-                <Li> You should not have to do these steps again, unless a brick crashes hard and does a full reset. If you notice the brick's name has reverted back to "EV3", it may have to be renamed and repaired.
+                <li> In our classroom, we've paired each brick with its own laptop. The bricks and laptops are labeled with numbers, and students match the numbers before starting.
+                <li> Mac-specific step (skip if on PC):
+                    <ol>
+                        <li> The brick must first be re-named starting with the string "serial" (in lowercase) before pairing so that Scratch will recognize it.
+                            Re-name a brick by connecting it to the Mac via USB, and using the LEGO Mindstorms Mac software. You should see the name change on the brick’s title bar.
+                        <li> If you previously paired the brick before renaming it, follow these steps before pairing:
+                          <ol type="i">
+                          <li> Turn off Bluetooth on the Mac (in the BT prefs).
+                          <li> Trash /Library/Preferences/com.apple.Bluetooth.plist (this is the main Library, not the user Library.)
+                          <li> Reboot the Mac
+                          <li> Re-enable Bluetooth.
+                          <li> Follow the next step to pair the brick.
+                          </oL>
+                    </ol>
+                
+              <li> On the Brick, enable bluetooth if it’s not already enabled.
+              <li> On the Brick, select the "iPhone/iPad/iPod” checkbox. (only temporarily; we’ll turn this off in the last step.)
+              <li> Look for the brick in the computer's Bluetooth panel, and click Pair.
+                  You should not be asked about passcodes. (Checking that iPhone/iPad/iPod for some reason eliminates the passcode requirement.)
+              <li><b>During pairing, you’ll see the brick show up as connected to the computer for about 5 seconds and then disconnect. This is normal. Wait for it to disconnect before the next step.</b>
+              <li> Lastly, turn off that "iPhone/iPad/iPod” checkbox.
+              <Li> You should not have to do these steps again, unless a brick crashes hard and does a full reset. If you notice the brick's name has reverted back to "EV3", it may have to be renamed and repaired.
             </ol>
             <li>Using the Extension:</li>
                 <ol type="a">
@@ -244,12 +250,12 @@ Newburyport, the north shore and southern New Hampshire.">
                     <li> Make sure the brick is turned on before going to the ScratchX webpage link.
                     <li> You can double-click a block directly in the menu in Scratch to make it trigger immediately. For example:
                         <ul>
-                            <li> To test whether a brick is still connected, double-click the "play tone" block in the More Blocks menu. You should hear a tone!
+                            <li> To test whether a brick is connected, double-click the "play tone" block in the More Blocks menu. You should hear a tone!
                             <li> To stop all motors quickly, double-click the "stop all motors" block.
                             <li> To see the value of a sensor, double-click its rounded block to see the result in the little pop-over.
                         </ul>
                     <Li> Make sure your EV3 blocks have selected the correct motor or input port.
-                    <li> For the IR Remote block to work, the red slider on the remote must be switched to top (1) setting.
+                    <li> For the IR Remote block to work, the red slider on the remote must be switched to top (1) setting. On the block, select the port where the IR sensor is connected.
                 </ul>
             <li><a href="http://kaspesla.github.io/ev3_scratch/examples/EV3_Scratch_Examples.zip">Demo SBX files on Github</a>
             <h2>Feedback</h2>
