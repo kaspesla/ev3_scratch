@@ -933,7 +933,7 @@ function allMotorsOff(how)
     motorsStop(how);
 }
 
-function steeringControl(port, what, duration, callback)
+function steeringControl(ports, what, duration, callback)
 {
     clearDriveTimer();
     var defaultSpeed = 50;
@@ -1308,7 +1308,7 @@ function(ext)
      
      ext.steeringControl = function(ports, what, duration, callback)
      {
-        steeringControl(port, what, duration, callback)
+        steeringControl(ports, what, duration, callback)
      }
      
      ext.whenButtonPressed = function(port)
