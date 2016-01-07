@@ -124,7 +124,7 @@ var lastCommandWeWereTrying = null;
 
 function startupBatteryCheckCallback(result)
 {
-    (timeStamp() + ": got battery level at connect: " + result);
+    console_log(timeStamp() + ": got battery level at connect: " + result);
     
     weConnected();
     
