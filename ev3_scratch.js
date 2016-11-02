@@ -497,16 +497,20 @@ function executeQueryQueue()
             clearDriveTimer();
             if (type == DRIVE_QUERY_DURATION)
             {
+                var parts =  which.split("|");
+                theCommand = parts[0];
+                var stopMotors = parts[1];
+
                 driveCallback = callback;   // save this callback in case timer is cancelled we can call it directly
                 driveTimer = setTimeout(
                                                function()
                                                {
-                                               if (duration > 0) // allow zero duration to run motors asynchronously
-                                               {
-                                               motorsStop('coast'); // xxx
-                                               }
-                                               if (callback)
-                                               callback();
+                                                   if (duration > 0) // allow zero duration to run motors asynchronously
+                                                   {
+                                                        motorsStop(stopMotors, 'coast'); // xxx
+                                                   }
+                                                   if (callback)
+                                                        callback();
                                                } , duration*1000);
             }
         }
@@ -1033,7 +1037,7 @@ function steeringControl(ports, what, duration, callback)
         motorCommand = motor2(ports, -1 * defaultSpeed);
     }
     
-    addToQueryQueue([DRIVE_QUERY_DURATION, duration, callback, motorCommand]);
+    addToQueryQueue([DRIVE_QUERY_DURATION, duration, callback, motorCommand + "|" + ports]); // special handling so we can stop the right motors
 }
 
 function whenButtonPressed(port)
