@@ -106,18 +106,18 @@ var SYSTEM_COMMAND = "SYSTEM_COMMAND";
 
 var frequencies = { "C4" : 262, "D4" : 294, "E4" : 330, "F4" : 349, "G4" : 392, "A4" : 440, "B4" : 494, "C5" : 523, "D5" : 587, "E5" : 659, "F5" : 698, "G5" : 784, "A5" : 880, "B5" : 988, "C6" : 1047, "D6" : 1175, "E6" : 1319, "F6" : 1397, "G6" : 1568, "A6" : 1760, "B6" : 1976, "C#4" : 277, "D#4" : 311, "F#4" : 370, "G#4" : 415, "A#4" : 466, "C#5" : 554, "D#5" : 622, "F#5" : 740, "G#5" : 831, "A#5" : 932, "C#6" : 1109, "D#6" : 1245, "F#6" : 1480, "G#6" : 1661, "A#6" : 1865 };
 
-var colors = [ "none", "black", "blue", "green", "yellow", "red", "white"];
+var colors = [ "nessuno", "nero", "blu", "verde", "giallo", "rosso", "bianco"];
 
 var IRbuttonNames = ['Top Left', 'Bottom Left', 'Top Right', 'Bottom Right', 'Top Bar'];
 var IRbuttonCodes = [1,            2,              3,          4,              9];
 
 var sensorPortsNames = [ "1", "2", "3", "4", "A", "B", "C", "D"];
 
-var sensorNames = { "7E" : "None", "7F" : "Port Error", "FF" : "Unknown", "7D" : "Initializing", "07" : "Large Motor", "08" : "Medium Motor", "10" : "Button Sensor", "1D" : "Light Sensor", "1E" : "Ultrasonic Sensor", "20" : "Gyro Sensor", "21" : "Infrared Sensor", "01" : "Button Sensor (NXT)", "02" : "Light Sensor (NXT)", "03" : "Sound Sensor", "04" : "Light/Color Sensor (NXT)", "05" : "Ultrasonic Sensor (NXT)", "06" : "Temperature Sensor (NXT)" };
+var sensorNames = { "7E" : "Nessuno", "7F" : "Porta sbagliata", "FF" : "Sconosciuto", "7D" : "Inizializzazione", "07" : "Motore grande", "08" : "Motore piccolo", "10" : "Sensore di pressione", "1D" : "Sensore di luce", "1E" : "Sensore ad ultrasuoni", "20" : "Giroscopio", "21" : "Sensore a infrarossi", "01" : "Button Sensor (NXT)", "02" : "Light Sensor (NXT)", "03" : "Sound Sensor", "04" : "Light/Color Sensor (NXT)", "05" : "Ultrasonic Sensor (NXT)", "06" : "Temperature Sensor (NXT)" };
 
 var port_Assignments = port_Assignments || [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-var ledColors = {"off" : "00", "green" : "01", "red" : "02", "orange" : "03", "green flashing" : "04", "red flashing" : "05", "orange flashing" : "06", "green pulse" : "07", "red pulse" : "08", "orange pulse" : "09"}
+var ledColors = {"off" : "00", "verde" : "01", "rosso" : "02", "arancione" : "03", "verde lampeggiante" : "04", "rosso lampeggiante" : "05", "arancione lampeggiante" : "06", "verde pulsato" : "07", "rosso pulsato" : "08", "arancione pulsato" : "09"}
 
 
 function clearSensorStatuses()
@@ -346,7 +346,7 @@ function getMotorBitsHexString(which)
         return "06";
     else if (which == "A+D")
         return "09";
-    else if (which == "all")
+    else if (which == "tutti")
         return "0F";
 
     return "00";
@@ -609,7 +609,7 @@ function receive_handler(data)
             if (num >= 0 && num < 7)
                 theResult = colors[num];
             else
-                theResult = "none";
+                theResult = "nessuno";
         }
     }
     else if (type == IR_SENSOR)
@@ -765,7 +765,7 @@ driveCallback = 0;
 
 function howStopCode(how)
 {
-    if (how == 'brake')
+    if (how == 'frena')
         return 1;
     else
         return 0;
@@ -1020,19 +1020,19 @@ function steeringControl(ports, what, duration, callback)
     clearDriveTimer();
     var defaultSpeed = 50;
     var motorCommand = null;
-    if (what == 'forward')
+    if (what == 'avanti')
     {
         motorCommand = motor(ports, defaultSpeed);
     }
-    else if (what == 'reverse')
+    else if (what == 'indietro')
     {
         motorCommand = motor(ports, -1 * defaultSpeed);
     }
-    else if (what == 'right')
+    else if (what == 'verso destra')
     {
         motorCommand = motor2(ports, defaultSpeed);
     }
-    else if (what == 'left')
+    else if (what == 'verso sinistra')
     {
         motorCommand = motor2(ports, -1 * defaultSpeed);
     }
@@ -1069,8 +1069,8 @@ function readTouchSensorPort(port, callback)
 function readColorSensorPort(port, mode, callback)
 {
     var modeCode = AMBIENT_INTENSITY;
-    if (mode == 'reflected') { modeCode = REFLECTED_INTENSITY; }
-    if (mode == 'color') { modeCode = COLOR_VALUE; }
+    if (mode == 'luce riflessa') { modeCode = REFLECTED_INTENSITY; }
+    if (mode == 'colori') { modeCode = COLOR_VALUE; }
     if (mode == 'RGBcolor') { modeCode = COLOR_RAW_RGB; }
 
     var portInt = parseInt(port) - 1;
