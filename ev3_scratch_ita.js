@@ -1104,7 +1104,7 @@ function waitUntilDarkLinePort(port, callback)
 function readGyroPort(mode, port, callback)
 {
     var modeCode = GYRO_ANGLE;
-    if (mode == 'rate') { modeCode = GYRO_RATE; }
+    if (mode == 'velocità angolare') { modeCode = GYRO_RATE; }
 
     var portInt = parseInt(port) - 1;
 
@@ -1129,7 +1129,7 @@ function readFromMotor(mmode, which, callback)
 {
     var portInt = getMotorIndex(which);
     var mode = READ_MOTOR_POSITION; // position
-    if (mmode == 'speed')
+    if (mmode == 'velocità')
         mode = READ_MOTOR_SPEED;
 
     readFromAMotor(portInt, READ_FROM_MOTOR, mode, callback);
@@ -1482,11 +1482,11 @@ function(ext)
      // Block and block menu descriptions
      var descriptor = {
      blocks: [
-              ["w", "drive %m.dualMotors %m.turnStyle %n seconds",         "steeringControl",  "B+C", "forward", 3],
-              [" ", "start motor %m.whichMotorPort speed %n",              "startMotors",      "B+C", 100],
-              [" ", "rotate motor %m.whichMotorPort speed %n by %n degrees then %m.brakeCoast",              "motorDegrees",      "A", 100, 360, "brake"],
-              [" ", "stop motors %m.whichMotorPort %m.brakeCoast",                       "motorsOff",     "all", "brake"],
-              [" ", "set LED %m.patterns",                                 "setLED",                 "green"],
+              ["w", "muovi i motori %m.dualMotors %m.turnStyle per %n secondi",         "steeringControl",  "B+C", "avanti", 3],
+              [" ", "porta il motore %m.whichMotorPort alla velocità %n",              "startMotors",      "B+C", 100],
+              [" ", "ruota il motore %m.whichMotorPort di %n gradi alla velocità %n e poi %m.brakeCoast",              "motorDegrees",      "A", 100, 360, "frena"],
+              [" ", "ferma i motori %m.whichMotorPort %m.brakeCoast e poi %m.brakeCoast",                       "motorsOff",     "tutti", "frena"],
+              [" ", "imposta LED colore %m.patterns",                                 "setLED",                 "verde"],
               ["h", "when button pressed on port %m.whichInputPort",       "whenButtonPressed","1"],
               ["h", "when IR remote %m.buttons pressed port %m.whichInputPort", "whenRemoteButtonPressed","Top Left", "1"],
               ["R", "button pressed %m.whichInputPort",                    "readTouchSensorPort",   "1"],
@@ -1499,14 +1499,14 @@ function(ext)
               ["R", "gyro  %m.gyroMode %m.whichInputPort",                 "readGyroPort",  "angle", "1"],
                     ],
      "menus": {
-     "whichMotorPort":   ["A", "B", "C", "D", "A+D", "B+C", "all"],
+     "whichMotorPort":   ["A", "B", "C", "D", "A+D", "B+C", "tutti"],
      "whichMotorIndividual":   ["A", "B", "C", "D"],
      "dualMotors":       ["A+D", "B+C"],
-     "turnStyle":        ["forward", "reverse", "right", "left"],
-     "brakeCoast":       ["brake", "coast"],
-     "lightSensorMode":  ["reflected", "ambient", "color"],
-     "motorInputMode": ["position", "speed"],
-     "gyroMode": ["angle", "rate"],
+     "turnStyle":        ["avanti", "indietro", "verso destra", "verso sinistra"],
+     "brakeCoast":       ["frena", "in folle"],
+     "lightSensorMode":  ["luce riflessa", "luce ambientale", "colore"],
+     "motorInputMode": ["posizione", "velocità"],
+     "gyroMode": ["angolo", "velocità angolare"],
      "note":["C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C#4","D#4","F#4","G#4","A#4","C#5","D#5","F#5","G#5","A#5","C#6","D#6","F#6","G#6","A#6"],
      "whichInputPort": ["1", "2", "3", "4"],
      "patterns": ["off", "green", "red", "orange", "green flashing", "red flashing", "orange flashing", "green pulse", "red pulse", "orange pulse"],
@@ -1520,8 +1520,8 @@ function(ext)
 
      var serial_info = {type: 'serial'};
      ScratchExtensions.register('EV3 Control', descriptor, ext, serial_info);
-     console_log(' registered extension. theEV3Device:' + theEV3Device);
+     console_log(' estensione registrata. EV3 collegato:' + theEV3Device);
 
-     console_log("EV3ScratchAlreadyLoaded: " + EV3ScratchAlreadyLoaded);
+     console_log("Estensione EV3Scratch già caricato: " + EV3ScratchAlreadyLoaded);
      EV3ScratchAlreadyLoaded = true;
 })({});
