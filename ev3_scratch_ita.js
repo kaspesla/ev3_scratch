@@ -1497,7 +1497,6 @@ function(ext)
 //              ["R", "remote button %m.whichInputPort",                     "readRemoteButtonPort",   "1"],
               ["R", "lettura di %m.motorInputMode del motore sulla porta %m.whichMotorIndividual",     "readFromMotor",   "posizione", "A"],
               ["R", "lettura di  %m.gyroMode del giroscopio sulla porta %m.whichInputPort",                 "readGyroPort",  "angolo", "1"],
-
                     ],
      "menus": {
      "whichMotorPort":   ["A", "B", "C", "D", "A+D", "B+C", "tutti"],
