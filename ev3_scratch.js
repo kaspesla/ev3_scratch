@@ -1496,6 +1496,7 @@ function(ext)
               ["R", "measure distance %m.whichInputPort",                  "readDistanceSensorPort",   "1"],
               ["R", "remote button %m.whichInputPort",                     "readRemoteButtonPort",   "1"],
               ["R", "motor %m.motorInputMode %m.whichMotorIndividual",     "readFromMotor",   "position", "A"],
+              ["R", "gyro  %m.gyroMode %m.whichInputPort",                 "readGyroPort",  "angle", "1"],
                     ],
      "menus": {
      "whichMotorPort":   ["A", "B", "C", "D", "A+D", "B+C", "all"],
@@ -1513,7 +1514,6 @@ function(ext)
      },
      };
  
- // ['R', 'gyro  %m.gyroMode %m.whichInputPort',                 'readGyroPort',  'angle', '1'],
  //    ['w', 'wait until light sensor %m.whichInputPort detects black line',   'waitUntilDarkLinePort',   '1'],
  //    ['R', 'battery level',   'readBatteryLevel'],
  //  [' ', 'reconnect', 'reconnectToDevice'],
