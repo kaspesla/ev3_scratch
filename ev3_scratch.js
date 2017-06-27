@@ -1482,7 +1482,7 @@ function(ext)
      // Block and block menu descriptions
      var descriptor = {
      blocks: [
-              ["w", "drive %m.dualMotors %m.turnStyle %n seconds",         "steeringControl",  "B+C", "forward", 3],
+              ["w", "KANO %m.dualMotors %m.turnStyle %n seconds",         "steeringControl",  "B+C", "forward", 3],
               [" ", "start motor %m.whichMotorPort speed %n",              "startMotors",      "B+C", 100],
               [" ", "rotate motor %m.whichMotorPort speed %n by %n degrees then %m.brakeCoast",              "motorDegrees",      "A", 100, 360, "brake"],
               [" ", "stop motors %m.whichMotorPort %m.brakeCoast",                       "motorsOff",     "all", "brake"],
