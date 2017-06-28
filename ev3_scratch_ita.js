@@ -1071,7 +1071,7 @@ function readColorSensorPort(mode, port, callback)
     var modeCode = AMBIENT_INTENSITY;
     if (mode == 'luce riflessa') { modeCode = REFLECTED_INTENSITY; }
     if (mode == 'colore') { modeCode = COLOR_VALUE; }
-    if (mode == 'luce ambientale') { modeCode = COLOR_RAW_RGB; }
+  //  if (mode == 'RGBcolor') { modeCode = COLOR_RAW_RGB; } //maybe deprecated
 
     var portInt = parseInt(port) - 1;
     readFromColorSensor(portInt, modeCode, callback);
