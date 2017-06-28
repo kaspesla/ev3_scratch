@@ -1028,11 +1028,11 @@ function steeringControl(ports, what, duration, callback)
     {
         motorCommand = motor(ports, -1 * defaultSpeed);
     }
-    else if (what == 'verso destra')
+    else if (what == 'in senso orario')
     {
         motorCommand = motor2(ports, defaultSpeed);
     }
-    else if (what == 'verso sinistra')
+    else if (what == 'in senso antiorario')
     {
         motorCommand = motor2(ports, -1 * defaultSpeed);
     }
@@ -1492,17 +1492,17 @@ function(ext)
               ["w", "suona la nota %m.note per %n ms",                    "playTone",         "C5", 500],
               ["R", "valore del sensore di luce in modalità %m.lightSensorMode alla porta %m.whichInputPort",   "readColorSensorPort",   "colore", "1"],
               ["R", "misura della distanza alla porta %m.whichInputPort",                  "readDistanceSensorPort",   "1"],
-              ["R", "%m.motorInputMode del motore alla porta %m.whichMotorIndividual",     "readFromMotor",   "posizione", "A"],
+              ["R", "%m.motorInputMode del motore alla porta %m.whichMotorIndividual",     "readFromMotor",   "angolo", "A"],
               ["R", "%m.gyroMode del giroscopio alla porta %m.whichInputPort",                 "readGyroPort",  "angolo", "1"],
                     ],
      "menus": {
      "whichMotorPort":   ["A", "B", "C", "D", "A+D", "B+C", "tutti"],
      "whichMotorIndividual":   ["A", "B", "C", "D"],
      "dualMotors":       ["A+D", "B+C"],
-     "turnStyle":        ["avanti", "indietro", "verso destra", "verso sinistra"],
+     "turnStyle":        ["avanti", "indietro", "in senso orario", "in senso antiorario"],
      "brakeCoast":       ["frena", "in folle"],
      "lightSensorMode":  ["luce riflessa", "luce ambientale", "colore"],
-     "motorInputMode": ["posizione", "velocità"],
+     "motorInputMode": ["angolo", "velocità"],
      "gyroMode": ["angolo", "velocità angolare"],
      "note":["C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C#4","D#4","F#4","G#4","A#4","C#5","D#5","F#5","G#5","A#5","C#6","D#6","F#6","G#6","A#6"],
      "whichInputPort": ["1", "2", "3", "4"],
