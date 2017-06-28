@@ -957,7 +957,7 @@ function startMotors(which, speed)
     addToQueryQueue([DRIVE_QUERY, 0, null, motorCommand]);
 }
 
-function motorDegrees(which, speed, degrees, howStop)
+function motorDegrees(which, degrees, speed, howStop)
 {
     speed = capSpeed(speed);
 
@@ -1066,12 +1066,12 @@ function readTouchSensorPort(port, callback)
     readTouchSensor(portInt, callback);
 }
 
-function readColorSensorPort(port, mode, callback)
+function readColorSensorPort(mode, port, callback)
 {
     var modeCode = AMBIENT_INTENSITY;
     if (mode == 'luce riflessa') { modeCode = REFLECTED_INTENSITY; }
-    if (mode == 'colori') { modeCode = COLOR_VALUE; }
-    if (mode == 'RGBcolor') { modeCode = COLOR_RAW_RGB; }
+    if (mode == 'colore') { modeCode = COLOR_VALUE; }
+    if (mode == 'luce ambientale') { modeCode = COLOR_RAW_RGB; }
 
     var portInt = parseInt(port) - 1;
     readFromColorSensor(portInt, modeCode, callback);
@@ -1399,9 +1399,9 @@ function(ext)
         startMotors(which, speed);
      }
 
-     ext.motorDegrees = function(which, speed, degrees, howStop)
+     ext.motorDegrees = function(which, degrees, speed, howStop)
      {
-        motorDegrees(which, speed, degrees, howStop);
+        motorDegrees(which, degrees, speed, howStop);
      }
 
      ext.playTone = function(tone, duration, callback)
@@ -1439,9 +1439,9 @@ function(ext)
         readTouchSensorPort(port, callback);
      }
 
-     ext.readColorSensorPort = function(port, mode, callback)
+     ext.readColorSensorPort = function(mode, port, callback)
      {
-        readColorSensorPort(port, mode, callback);
+        readColorSensorPort(mode, port, callback);
      }
 
 
@@ -1484,17 +1484,14 @@ function(ext)
      blocks: [
               ["w", "muovi i motori %m.dualMotors %m.turnStyle per %n secondi",         "steeringControl",  "B+C", "avanti", 3],
               [" ", "porta il motore %m.whichMotorPort alla velocità %n",              "startMotors",      "B+C", 100],
-              [" ", "ruota il motore %m.whichMotorPort di %n gradi alla velocità %n e poi %m.brakeCoast",              "motorDegrees",      "A", 360, 100, "frena"],
+              [" ", "ruota il motore %m.whichMotorPort di %n gradi alla velocità %n e poi %m.brakeCoast",              "motorDegrees",      "A", 360, 60, "frena"],
               [" ", "ferma i motori %m.whichMotorPort e poi %m.brakeCoast",                       "motorsOff",     "tutti", "frena"],
               [" ", "imposta LED colore %m.patterns",                                 "setLED",                 "verde"],
               ["h", "quando si preme il pulsante alla porta %m.whichInputPort",       "whenButtonPressed","1"],
-//              ["h", "when IR remote %m.buttons pressed port %m.whichInputPort", "whenRemoteButtonPressed","Top Left", "1"],
               ["R", "il pulsante alla porta %m.whichInputPort è premuto",                    "readTouchSensorPort",   "1"],
               ["w", "suona la nota %m.note per %n ms",                    "playTone",         "C5", 500],
-//              ["w", "suona la frequenza %n Hz per %n ms",                    "playFreq",         "262", 500],
-              ["R", "valore del sensore di luce in modalità %m.lightSensorMode alla porta%m.whichInputPort",   "readColorSensorPort",   "colore", "1"],
+              ["R", "valore del sensore di luce in modalità %m.lightSensorMode alla porta %m.whichInputPort",   "readColorSensorPort",   "colore", "1"],
               ["R", "misura della distanza alla porta %m.whichInputPort",                  "readDistanceSensorPort",   "1"],
-//              ["R", "remote button %m.whichInputPort",                     "readRemoteButtonPort",   "1"],
               ["R", "%m.motorInputMode del motore alla porta %m.whichMotorIndividual",     "readFromMotor",   "posizione", "A"],
               ["R", "%m.gyroMode del giroscopio alla porta %m.whichInputPort",                 "readGyroPort",  "angolo", "1"],
                     ],
@@ -1517,6 +1514,10 @@ function(ext)
  //    ['w', 'wait until light sensor %m.whichInputPort detects black line',   'waitUntilDarkLinePort',   '1'],
  //    ['R', 'battery level',   'readBatteryLevel'],
  //  [' ', 'reconnect', 'reconnectToDevice'],
+ //              ["h", "when IR remote %m.buttons pressed port %m.whichInputPort", "whenRemoteButtonPressed","Top Left", "1"],
+ //              ["R", "remote button %m.whichInputPort",                     "readRemoteButtonPort",   "1"],
+ //              ["w", "suona la frequenza %n Hz per %n ms",                    "playFreq",         "262", 500],
+
 
      var serial_info = {type: 'serial'};
      ScratchExtensions.register('EV3 Kano', descriptor, ext, serial_info);
