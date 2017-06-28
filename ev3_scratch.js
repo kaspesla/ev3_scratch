@@ -1491,7 +1491,7 @@ function(ext)
 //              ["h", "when IR remote %m.buttons pressed port %m.whichInputPort", "whenRemoteButtonPressed","Top Left", "1"],
               ["R", "il pulsante alla porta %m.whichInputPort è premuto",                    "readTouchSensorPort",   "1"],
               ["w", "suona la nota %m.note per %n ms",                    "playTone",         "C5", 500],
-              ["w", "suona la frequenza %n Hz per %n ms",                    "playFreq",         "262", 500],
+//              ["w", "suona la frequenza %n Hz per %n ms",                    "playFreq",         "262", 500],
               ["R", "valore del sensore di luce in modalità %m.lightSensorMode alla porta%m.whichInputPort",   "readColorSensorPort",   "colore", "1"],
               ["R", "misura della distanza alla porta %m.whichInputPort",                  "readDistanceSensorPort",   "1"],
 //              ["R", "remote button %m.whichInputPort",                     "readRemoteButtonPort",   "1"],
