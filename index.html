@@ -1,0 +1,394 @@
+<!doctype html>
+<html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml" xmlns:website="http://ogp.me/ns/website" lang="en-US" itemscope itemtype="http://schema.org/WebPage"  class="touch-styles squarespace-damask">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- This is Squarespace. --><!-- ken-aspeslagh -->
+<base href="http://www.codeandcircuit.org">
+<meta charset="utf-8" />
+<title>ScratchX EV3 Extension — Code &amp; Circuit</title>
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+<script type="text/javascript">SQUARESPACE_ROLLUPS = {};</script>
+<script>(function(rollups, name) { if (!rollups[name]) { rollups[name] = {}; } rollups[name].js = ["//static.squarespace.com/universal/scripts-compressed/common-f740f1aba1972de32f4b-min.js"]; })(SQUARESPACE_ROLLUPS, 'squarespace-common');</script>
+<script>(function(rollups, name) { if (!rollups[name]) { rollups[name] = {}; } rollups[name].js = ["//static.squarespace.com/universal/scripts-compressed/commerce-d248de6417dce35b2556-min.js"]; })(SQUARESPACE_ROLLUPS, 'squarespace-commerce');</script>
+<script>(function(rollups, name) { if (!rollups[name]) { rollups[name] = {}; } rollups[name].css = ["//static.squarespace.com/universal/styles-compressed/commerce-7adb43fa211d452cd060c240625da2bc-min.css"]; })(SQUARESPACE_ROLLUPS, 'squarespace-commerce');</script>
+<script type="text/javascript" data-sqs-type="dynamic-assets-loader">(function() {(function(a){function d(a){-1!==a.indexOf(".js")?document.write('<script type="text/javascript" src="'+a+'">\x3c/script>'):document.write('<link rel="stylesheet" type="text/css" href="'+a+'" />')}try{if(window.top!=window&&window.top.Squarespace&&window.top.Squarespace.frameAvailable){window.top.Squarespace.frameAvailable(window,SQUARESPACE_ROLLUPS);return}}catch(e){console.error(e)}for(var c in a){if(a[c].js)for(var b=0;b<a[c].js.length;b++)d(a[c].js[b]);if(a[c].css)for(b=0;b<a[c].css.length;b++)d(a[c].css[b])}})(SQUARESPACE_ROLLUPS);
+})();</script>
+<script type="text/javascript" data-sqs-type="imageloader">(function() {var SQUARESPACE_SIZES=[2500,1500,1E3,750,500,300,100],IMAGE_LOADING_CLASS="loading",ImageLoader=new function(){this.load=function(a,b){function c(a,b,c){var d=new Image;d.onload=b;d.onerror=c;d.src=a}a.getDOMNode&&(a=a.getDOMNode());var d=this._getDataFromNode(a,b),e=!(!d.dimensions||!d.dimensions.width||!d.dimensions.height),l=d.load+"";if("false"===l)return!1;var g=d.mode;if(e&&("fit"==g||"fill"==g)){g=a.parentNode;if(!g)return console.error("Not doing anything, parentNode not found."),!1;if(!this.refresh(a,
+b,g))return!1}var n=this._intendToLoad(a,d);if("string"==typeof n&&"viewport"!==l){var m=this.getUrl(n,d),d=a.getAttribute("data-image-resolution");a.getAttribute("src")!==m&&this.isValidResolution(n,d)&&(a.onload=function(){a.className=a.className.replace(IMAGE_LOADING_CLASS," ").trim();a.setAttribute("data-image-resolution",n)},!a.getAttribute("src")&&-1===a.className.indexOf(IMAGE_LOADING_CLASS)&&(a.className+=(a.className?" ":"")+IMAGE_LOADING_CLASS),!a.getAttribute("src")&&e?a.setAttribute("src",
+m):c(m,function(){e?a.setAttribute("src",m):(a.setAttribute("data-image-dimensions",this.width+"x"+this.height),ImageLoader.load(a,b))},function(){a.className=a.className.replace(IMAGE_LOADING_CLASS," ").trim();a.setAttribute("src",m)}));return!0}return n};this.refresh=function(a,b,c){a.getDOMNode&&(a=a.getDOMNode());c&&c.getDOMNode&&(c=c.getDOMNode());c=c||a.parentNode;if(!c)return console.error("Not doing anything, parentNode not found."),!1;var d=this._getDataFromNode(a,b),e=c.offsetWidth,l=c.offsetHeight;
+b=d.mode;if("none"!=b){var g=d.dimensions.width,n=d.dimensions.height,m=g/n,q=e/l;if(d.fixedRatio)"fill"==b&&q>m||"fit"==b&&q<m?(h=100,k=100*(q/m),r=(100-k)*d.focalPoint.y,p=0):(h=100*(m/q),k=100,r=0,p=(100-h)*d.focalPoint.x),a.style.top=r+"%",a.style.left=p+"%",a.style.width=h+"%",a.style.height=k+"%";else{var f;"fill"===b?f=m>q?l/n:e/g:"fit"===b&&(f=m<q?l/n:e/g);!d.stretch&&"fit"==b&&1<f&&(f=1);var h=Math.ceil(g*f),k=Math.ceil(n*f);if(0===h||0===k)return!1;var p,r;"fill"===b?(p=Math.min(Math.max(e/
+2-h*d.focalPoint.x,e-h),0),r=Math.min(Math.max(l/2-k*d.focalPoint.y,l-k),0)):"fit"===b&&(f=d.fitAlignment,p=f.left?0:f.right?e-h:h<e?(e-h)/2:0,r=f.top?0:f.bottom?l-k:k<l?(l-k)/2:0,"inline"==this._getStyle(a,"display")&&(a.style.fontSize="0px"),this._resetAlt(a,function(){h-=a.offsetHeight-a.clientHeight;k-=a.offsetWidth-a.clientWidth}));a.style.top=Math.ceil(r)+"px";a.style.left=Math.ceil(p)+"px";a.style.width=Math.ceil(h)+"px";a.style.height=Math.ceil(k)+"px"}p=this._getStyle(c,"position");a.style.position=
+"relative"==p?"absolute":"relative";if("fill"==b&&(b=this._getStyle(c,"overflow"),!b||"hidden"!=b))c.style.overflow="hidden";return!0}};this._intendToLoad=function(a,b){function c(c,d){"none"===b.mode&&(a.style.width=null,a.style.height=null);var e=parseFloat(a.getAttribute(c)),f=parseFloat(e);if(!f||isNaN(f))e=g._getStyle(a,c),f=parseFloat(e);if(!f||isNaN(f))e=g._getStyle(a,"max-"+c,"max"+(c.substr(0,1).toUpperCase()+c.substr(1))),f=parseFloat(e);if(0===d||e)switch(g._stringType(e)){case "percentage":d=
+parseInt(e,10)/100*l["offset"+c.substr(0,1).toUpperCase()+c.substr(1)];break;case "number":d=parseInt(e,10)}!f&&0!==d&&!a.getAttribute("src")&&(d=0);return d}b=b||this._getDataFromNode(a);if(!b.source)return!1;var d=a.offsetWidth,e=a.offsetHeight,l=a.parentNode,g=this;this._resetAlt(a,function(){d=c("width",d);e=c("height",e)});0===d&&0===e?(d=b.dimensions.width,e=b.dimensions.height):0===d?d=this.getDimensionForValue("width",e,b):0===e&&(e=this.getDimensionForValue("height",d,b));"viewport"===b.load&&
+(a.style.width=Math.floor(d)+"px",a.style.height=Math.floor(e)+"px");return this.getSquarespaceSize(d,e,b)};this._getDataFromNode=function(a,b){b=b||{};var c={focalPoint:{x:0.5,y:0.5},dimensions:{width:null,height:null},mode:"none",fitAlignment:{center:!0},load:"true",stretch:!0,fixedRatio:!1};if(b.focalPoint)c.focalPoint=b.focalPoint;else{var d=a.getAttribute("data-image-focal-point");if(d&&(d=d.split(","))&&2==d.length)c.focalPoint={x:parseFloat(d[0]),y:parseFloat(d[1])}}if(b.dimensions)c.dimensions=
+b.dimensions;else if((d=a.getAttribute("data-image-dimensions"))&&(d=d.split("x"))&&2==d.length)c.dimensions={width:parseInt(d[0],10),height:parseInt(d[1],10)};b.mode?c.mode=b.mode:a.parentNode&&(d=a.parentNode.className,-1!==d.indexOf("content-fill")?c.mode="fill":-1!==d.indexOf("content-fit")&&(c.mode="fit"));if("fit"===c.mode&&a.parentNode&&(d=b.fitAlignment||a.getAttribute("data-alignment")||a.parentNode.getAttribute("data-alignment")))c.fitAlignment={top:-1!==d.indexOf("top"),left:-1!==d.indexOf("left"),
+center:-1!==d.indexOf("center"),right:-1!==d.indexOf("right"),bottom:-1!==d.indexOf("bottom")};if(b.load)c.load=b.load;else if(d=a.getAttribute("data-load"))c.load=d;if("undefined"!==typeof b.stretch)c.stretch=b.stretch;else if(d=a.getAttribute("data-image-stretch"))c.stretch="true"===d?!0:!1;c.source=b.source?b.source:a.getAttribute("data-src");if(c.source&&(-1!==c.source.indexOf("squarespace.com")||-1!==c.source.indexOf("squarespace.net"))&&"http:"===c.source.substr(0,5)&&"https"===window.location.protocol.substr(0,
+5))c.source=c.source.replace("http://","https://");if(b.fixedRatio)c.fixedRatio=b.fixedRatio;else if(d=a.getAttribute("data-fixed-ratio"))c.fixedRatio="true"==d;return c};this._stringType=function(a){return"string"===typeof a&&-1!==a.indexOf("%")?"percentage":isNaN(parseInt(a,10))?NaN:"number"};this._getStyle=function(a,b,c){var d;a.currentStyle?d=a.currentStyle[c||b]:window.getComputedStyle&&(d=document.defaultView.getComputedStyle(a,null).getPropertyValue(b));return d};this._isVisible=function(a){a=
+a.getBoundingClientRect();return 0<=a.left&&0<=a.top||0<=a.bottom&&0<=a.right||0<=a.left&&0<=a.bottom||0<=a.right&&0<=a.top};this.getSquarespaceSize=function(a,b,c){a=Math.max(b/(c.dimensions.height/c.dimensions.width),a);"undefined"===typeof app&&"number"===typeof window.devicePixelRatio&&(a*=window.devicePixelRatio);for(b=1;b<SQUARESPACE_SIZES.length&&!(a>SQUARESPACE_SIZES[b]);b++);return SQUARESPACE_SIZES[b-1]+"w"};this.getDimensionForValue=function(a,b,c){var d=c.dimensions.width;c=c.dimensions.height;
+return"width"==a?d/c*b:"height"==a?c/d*b:NaN};this.getUrl=function(a,b){var c=b.source;return a&&("/"==c[0]||-1!=c.indexOf("squarespace.com")||-1!=c.indexOf("squarespace.net"))?(-1===c.indexOf("format="+a)&&(c=c+(-1!==c.indexOf("?")?"&":"?")+"format="+a),window.Static&&window.Static.IN_BACKEND&&-1===c.indexOf("storage=local")&&(c+="&storage=local"),c):b.source};this.isValidResolution=function(a,b){a=parseInt(a,10);b=parseInt(b,10);return isNaN(a)||isNaN(b)?!0:a>b};this._resetAlt=function(a,b){var c=
+a.getAttribute("alt"),d=c&&0<c.length&&!a.getAttribute("src");if(d){var e=a.style.display;a.removeAttribute("alt");a.style.display="none";a.offsetHeight+0;a.style.display=e}b.call(this);d&&a.setAttribute("alt",c)};this.bootstrap=function(){var a=document.images;if(0<a.length)for(var b=0,c=a.length;b<c;b++)((a[b].hasAttribute?a[b].hasAttribute("data-image"):a[b].attributes["data-image"])||(a[b].hasAttribute?a[b].hasAttribute("data-src"):a[b].attributes["data-src"]))&&"false"!==(a[b].getAttribute?a[b].getAttribute("data-load"):
+a[b].attributes["data-load"])+""&&ImageLoader.load(a[b])}};window.ImageLoader=ImageLoader;window.YUI&&YUI.add("squarespace-imageloader",function(a){});
+})();</script>
+
+<script type="text/javascript" src="//use.typekit.net/ik/Tv_ykHtnxXP35udcdzFhr0IC06hp5j_Gf8MkwBWcT4IfenMffFHN4UJLFRbh52jhWD9kjhJU5288ZQsKw2IkZcjowRjoZcItZsT1iaiaOcFzZemydcsR-W4RiA8XOcNkZkURdhs8jAoqjh8kjamTifozScSC-hm0OABDSemDdeB1-foDSWmyScmDSeBRZPoRdhXCHKonZAtljWF3ZWFCjAiGO1FUiABkZWF3jAF8OcFzdPJwSY4zpe8ljPu0daZyJy4yZeNKZPu1jW4ydAN0Zfu3Scv7fbRKHyMMeMw6MKG4fHvgIMMjgfMfH6qJnbIbMg6eJMJ7fbKOMsMMeMS6MKG4f5w7IMMj2PMfH6qJn6IbMg6bJMJ7fbKwMsMMegI6MKG4fVwXIMIjgfMfH6qJv2bbMs6YJMJ7fbRkFgMgeMt6MKG4fVIXIMIjIPMfqMYl0Lc1gb.js"></script>
+<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+<!--[if gte IE 9]> <link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/52cb189ee4b012ff9269fa8e/132/52a74dafe4b073a80cd253c5/54fc84aae4b0d3db827f519a/922-05142015/1435853813526/site.css?&filterFeatures=false&part=1"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/52cb189ee4b012ff9269fa8e/132/52a74dafe4b073a80cd253c5/54fc84aae4b0d3db827f519a/922-05142015/1435853813526/site.css?&filterFeatures=false&part=2"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/52cb189ee4b012ff9269fa8e/132/52a74dafe4b073a80cd253c5/54fc84aae4b0d3db827f519a/922-05142015/1435853813526/site.css?&filterFeatures=false&part=3"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/52cb189ee4b012ff9269fa8e/132/52a74dafe4b073a80cd253c5/54fc84aae4b0d3db827f519a/922-05142015/1435853813526/site.css?&filterFeatures=false&part=4"/><![endif]-->
+<!--[if lt IE 9]><script src="//static.squarespace.com"></script><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/52cb189ee4b012ff9269fa8e/132/52a74dafe4b073a80cd253c5/54fc84aae4b0d3db827f519a/922-05142015/1435853813526/site.css?&filterFeatures=false&noMedia=true&part=1"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/52cb189ee4b012ff9269fa8e/132/52a74dafe4b073a80cd253c5/54fc84aae4b0d3db827f519a/922-05142015/1435853813526/site.css?&filterFeatures=false&noMedia=true&part=2"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/52cb189ee4b012ff9269fa8e/132/52a74dafe4b073a80cd253c5/54fc84aae4b0d3db827f519a/922-05142015/1435853813526/site.css?&filterFeatures=false&noMedia=true&part=3"/><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/52cb189ee4b012ff9269fa8e/132/52a74dafe4b073a80cd253c5/54fc84aae4b0d3db827f519a/922-05142015/1435853813526/site.css?&filterFeatures=false&noMedia=true&part=4"/><![endif]-->
+<!--[if !IE]> --><link rel="stylesheet" type="text/css" href="//static1.squarespace.com/static/sitecss/52cb189ee4b012ff9269fa8e/132/52a74dafe4b073a80cd253c5/54fc84aae4b0d3db827f519a/922-05142015/1435853813526/site.css?&filterFeatures=false"/><!-- <![endif]-->
+<NOSCRIPT>
+This site requires JavaScript.
+</NOSCRIPT>
+<script>(function() {
+  var _fbq = window._fbq || (window._fbq = []);
+  if (!_fbq.loaded) {
+    var fbds = document.createElement('script');
+    fbds.async = true;
+    fbds.src = '//connect.facebook.net/en_US/fbds.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(fbds, s);
+    _fbq.loaded = true;
+  }
+  _fbq.push(['addPixelId', '668277719910586']);
+})();
+window._fbq = window._fbq || [];
+window._fbq.push(['track', 'PixelInitialized', {}]);
+</script>
+<noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?id=668277719910586&amp;ev=PixelInitialized" /></noscript>
+<meta name="description" content="Computer science classes for kids and adults, as well as hands-on fun with the latest learning tools and toys. Located in Amesbury, MA and serving 
+Newburyport, the north shore and southern New Hampshire.">
+<meta property="og:title" content="Code & Circuit"><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(['_setAccount', 'UA-47400436-1']); _gaq.push(['_trackPageview']); (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })(); </script><!-- End of Squarespace Headers -->
+    <script>/* Must be below {squarespace-headers} */(function(){var e='ontouchstart'in window||navigator.msMaxTouchPoints;var t=document.documentElement;if(!e&&t){t.className=t.className.replace(/touch-styles/,'')}})()
+    </script>
+  </head>
+
+  <body id="collection-559563e9e4b0b0384004df7a" class="transparent-header enable-nav-button nav-button-style-outline nav-button-corner-style-pill banner-button-style-solid banner-button-corner-style-pill banner-slideshow-controls-arrows meta-priority-date  hide-entry-author hide-list-entry-footer    hide-blog-sidebar center-navigation--info hide-site-info gallery-design-grid aspect-ratio-auto lightbox-style-light gallery-navigation-bullets gallery-info-overlay-show-on-hover gallery-aspect-ratio-32-standard gallery-arrow-style-no-background gallery-transitions-fade gallery-show-arrows gallery-auto-crop   product-list-titles-under product-list-alignment-center product-item-size-11-square product-image-auto-crop product-gallery-size-11-square  show-product-price show-product-item-nav product-social-sharing  event-show-past-events event-thumbnails event-thumbnail-size-32-standard event-date-label  event-list-show-cats event-list-date event-list-time event-list-address   event-icalgcal-links  event-excerpts       hide-opentable-icons opentable-style-dark newsletter-style-dark small-button-style-solid small-button-shape-square medium-button-style-solid medium-button-shape-square large-button-style-solid large-button-shape-square button-style-solid button-corner-style-square native-currency-code-usd collection-type-page collection-layout-default collection-559563e9e4b0b0384004df7a mobile-style-available">
+    <input type="checkbox" name="mobile-nav-toggle" id="mobileNavToggle" class="mobile-nav-toggle-box hidden" /><a href="#" class="body-overlay"></a>
+    <div class="sqs-announcement-bar-dropzone"></div>
+    <div id="sidecarNav">
+      <div id="mobileNavWrapper" class="nav-wrapper" data-content-field="navigation-mobileNav">
+  <nav id="mobileNavigation">
+    
+      
+        
+        <div class="index homepage">
+          <a href="/">
+            WELCOME
+          </a>
+        </div>
+        
+      
+
+    
+      
+        
+
+        
+
+          
+          <div class="collection">
+            <a href="/aboutus/">
+              About
+            </a>
+          </div>
+          
+
+        
+      
+      
+
+    
+      
+        
+
+        
+
+      
+      
+
+    
+  </nav>
+</div>
+
+
+
+    </div>
+    <div id="siteWrapper" class="clearfix">
+
+      <div class="sqs-cart-dropzone"></div>
+
+      <header id="header" class="show-on-scroll" data-offset-el=".index-section" data-offset-behavior="bottom" role="banner">
+        <div class="header-inner">
+          <div id="logoWrapper" class="wrapper" data-content-field="site-title">
+            
+              <h1 id="logoImage"><a href="/"><img src="//static1.squarespace.com/static/52cb189ee4b012ff9269fa8e/t/54fe5a09e4b0a0aa1b657583/1435854106720/?format=1500w" alt="Code & Circuit - Computer Science Classes for Everyone" /></a></h1>
+            
+          </div><!-- comment the linebreak between these two elements because science
+          --><label for="mobileNavToggle" class="mobile-nav-toggle-label"><div class="top-bar"></div><div class="middle-bar"></div><div class="bottom-bar"></div></label><label for="mobileNavToggle" class="mobile-nav-toggle-label fixed-nav-toggle-label"><div class="top-bar"></div><div class="middle-bar"></div><div class="bottom-bar"></div></label><!-- comment the linebreak between these two elements because science
+          --><div id="headerNav"><div id="mainNavWrapper" class="nav-wrapper" data-content-field="navigation-mainNav">
+  <nav id="mainNavigation" data-content-field="navigation-mainNav">
+    
+      
+        
+        <div class="index homepage">
+          <a href="/">
+            WELCOME
+          </a>
+        </div>
+        
+      
+
+    
+      
+        
+
+        
+
+          
+          <div class="collection">
+            <a href="/aboutus/">
+              About
+            </a>
+          </div>
+          
+
+        
+      
+        
+      
+      
+
+    
+  </nav>
+</div>
+<!-- style below blocks out the mobile nav toggle only when nav is loaded -->
+<style>.mobile-nav-toggle-label { display: inline-block !important; }</style>
+
+
+</div>
+        </div>
+      </header>
+
+      
+        
+          
+            
+              
+                <div id="promotedGalleryWrapper" class="sqs-layout promoted-gallery-wrapper"><div class="row"><div class="col"></div></div></div>
+                
+              
+            
+          
+        
+      
+
+ 
+      
+      
+      
+
+      <main id="page" role="main">
+        
+        
+        <div id="content" class="main-content" data-content-field="main-content" data-collection-id="559563e9e4b0b0384004df7a" data-edit-main-image="Banner">
+         <div class="sqs-layout sqs-grid-12 columns-12" data-type="page" data-updated-on="1435854106718" id="page-559563e9e4b0b0384004df7a"><div class="row sqs-row"><div class="col sqs-col-12 span-12"><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-637ddfed9897650b6e08"><div class="sqs-block-content">
+             <h2>EV3+Scratch Extension</h2>
+             
+             <p dir="ltr">Code & Circuit has developed this ScratchX Extension to control our EV3 bricks over Bluetooth from Scratch.<br>Check out the demo video below.
+            <H2> Try it out!</H2>
+            
+            REQUIREMENTS:
+            <br>
+            <uL>
+                <li> An EV3 brick </li>
+                <li> A properly configured ScratchX device plug-in on Mac (Safari) or Windows (IE or Firefox)</li>
+            </ul>
+            
+            INSTRUCTIONS:
+            <br>
+            <ol>
+            <li> Make sure you have installed the latest <a href="https://scratch.mit.edu/info/ext_download/">Device Plugin</a> for Safari or IE.</li>
+            <li> First-Time Setup:
+                
+            <ol type="a">
+                <li> In our classroom, we've paired each brick with its own laptop. The bricks and laptops are labeled with numbers, and students match the numbers before starting.
+                <li> Mac-specific step (skip if on PC):
+                    <ol>
+                        <li> The brick must first be re-named starting with the string "serial" (in lowercase) before pairing so that Scratch will recognize it.
+                            Re-name a brick by connecting it to the Mac via USB, and using the LEGO Mindstorms Mac software. You should see the name change on the brick’s title bar.
+                        <li> If you previously paired the brick before renaming it, follow these steps before pairing:
+                          <ol type="i">
+                          <li> Turn off Bluetooth on the Mac (in the BT prefs).
+                          <li> Trash /Library/Preferences/com.apple.Bluetooth.plist (this is the main Library, not the user Library.)
+                          <li> Reboot the Mac
+                          <li> Re-enable Bluetooth.
+                          <li> Follow the next step to pair the brick.
+                          </oL>
+                    </ol>
+                
+              <li> On the Brick, enable bluetooth if it’s not already enabled.
+              <li> On the Brick, select the "iPhone/iPad/iPod” checkbox. (only temporarily; we’ll turn this off in the last step.)
+              <li> Look for the brick in the computer's Bluetooth panel, and click Pair.
+                  You should not be asked about passcodes. (Checking that iPhone/iPad/iPod for some reason eliminates the passcode requirement.)
+              <li><b>During pairing, you’ll see the brick show up as connected to the computer for about 5 seconds and then disconnect. This is normal. Wait for it to disconnect before the next step.</b>
+              <li> Lastly, turn off that "iPhone/iPad/iPod” checkbox.
+              <Li> You should not have to do these steps again, unless a brick crashes hard and does a full reset. If you notice the brick's name has reverted back to "EV3", it may have to be renamed and repaired.
+            </ol>
+            <li>Using the Extension:</li>
+                <ol type="a">
+                    <li> Make sure brick is powered on first and <b>iPhone/iPad/iPod checkbox is unchecked.</b>
+                    <li> <i>Do not</i> manually initiate any connections to or from the brick. The Scratch Plug-in will automatically connect when the ScratchX webpage loads.</li>
+                    <li> Go to this link using Safari (Mac) or IE (Windows): <a href="http://scratchx.org/?url=http://kaspesla.github.io/ev3_scratch/ev3_scratch.js">EV3 Scratch Extension</a>. We have not had any luck with Chrome.
+                    <li> When the connection is successful, you will hear the brick play some happy tones.</li>
+                    <li> If the connection is lost (brick was turned off, goes out of range, etc.), you must refresh the browser page to re-connect to the brick. Save your ScratchX project as an sbx file first, refresh the page, wait for the beeps, and then load the sbx file.
+                        </ol>
+            </ol>
+            <li> Tips: </li>
+                <ul>
+                    <li> Make sure the brick is turned on before going to the ScratchX webpage link.
+                    <li> You can double-click a block directly in the menu in Scratch to make it trigger immediately. For example:
+                        <ul>
+                            <li> To test whether a brick is connected, double-click the "play tone" block in the More Blocks menu. You should hear a tone!
+                            <li> To stop all motors quickly, double-click the "stop all motors" block.
+                            <li> To see the value of a sensor, double-click its rounded block to see the result in the little pop-over.
+                        </ul>
+                    <Li> Make sure your EV3 blocks have selected the correct motor or input port.
+                    <li> For the IR Remote block to work, the red slider on the remote must be switched to top (1) setting. On the block, select the port where the IR sensor is connected.
+                </ul>
+            <li><a href="http://kaspesla.github.io/ev3_scratch/examples/EV3_Scratch_Examples.zip">Demo SBX files on Github</a>
+            <h2>Feedback</h2>
+            <li>Send comments/feedback to lego@codeandcircuit.org</a></li>
+             </p>
+
+<p>
+<iframe width="800" height="400" src="https://www.youtube.com/embed/jOgum8tWsrI?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe></p>
+
+         </div><!-- comment the linebreak between these two elements because science
+        -->
+        
+      </main>
+
+      <div id="preFooter">
+        <div class="pre-footer-inner">
+          <div class="sqs-layout sqs-grid-12 columns-12" data-layout-label="Pre-Footer Content" data-type="block-field" data-updated-on="1406661050940" id="preFooterBlocks"><div class="row sqs-row"><div class="col sqs-col-12 span-12"><div class="sqs-block socialaccountlinks-v2-block sqs-block-socialaccountlinks-v2" data-block-type="54" id="block-yui_3_17_2_1_1406660821033_8373"><div class="sqs-block-content"><nav class="sqs-svg-icon--list social-icon-alignment-center social-icons-color-white social-icons-size-large social-icons-shape-circle social-icons-style-knockout"><a href="https://www.facebook.com/CodeAndCircuit" target="_blank" class="sqs-svg-icon--wrapper facebook" style=""><div><svg class="sqs-svg-icon--social" viewBox="0 0 64 64"><use class="sqs-use--background" xlink:href="/universal/svg/social-accounts.svg#background"></use><use class="sqs-use--icon" xlink:href="/universal/svg/social-accounts.svg#facebook-icon"></use><use class="sqs-use--mask" xlink:href="/universal/svg/social-accounts.svg#facebook-mask"></use></svg></div></a></nav></div></div></div></div></div>
+        </div>
+      </div>
+
+      <footer id="footer" role="contentinfo">
+        <div class="footer-inner">
+          <div class="nav-wrapper back-to-top-nav"><nav><div class="back-to-top"><a href="#header">Back to Top</a></div></nav></div>
+          <div id="secondaryNavWrapper" class="nav-wrapper" data-content-field="navigation-secondaryNav">
+  <nav id="secondaryNavigation" data-content-field="navigation-secondaryNav">
+    
+      
+        
+
+        
+
+          
+          <div class="collection" id="id52cb263ee4b089dfb57f3c05">
+            <a href="/contact/">
+              <span>Contact/Location</span>
+            </a>
+          </div>
+          
+
+        
+      
+      
+
+    
+      
+        
+
+        
+
+          
+          <div class="collection" id="id532db8e2e4b02b8c3510b022">
+            <a href="/calendar/">
+              <span>Calendar</span>
+            </a>
+          </div>
+          
+
+        
+      
+      
+
+    
+      
+        
+
+        
+
+          
+          <div class="collection" id="id52d02532e4b059b045be077c">
+            <a href="/resources/">
+              <span>Resources</span>
+            </a>
+          </div>
+          
+
+        
+      
+      
+
+    
+      
+        
+
+        
+
+          
+          <div class="collection" id="id52ebb85ae4b09fc88a622c07">
+            <a href="/policies/">
+              <span>Policies</span>
+            </a>
+          </div>
+          
+
+        
+      
+      
+
+    
+      
+        
+
+        
+
+          
+          <div class="collection" id="id52d01bd3e4b0f8548aadf3b9">
+            <a href="/terms-conditions/">
+              <span>Terms & Conditions</span>
+            </a>
+          </div>
+          
+
+        
+      
+      
+
+    
+  </nav>
+</div>
+
+
+          <div id="siteInfo"><span class="site-address">Code & Circuit, 36 Main St, Amesbury, MA, USA</span><span rel="tel" class="site-phone">978-386-3800</span><a href="mailto:ken@codeandcircuit.org" class="site-email"><span>ken@codeandcircuit.org</span></a></div>
+          <div class="sqs-layout sqs-grid-12 columns-12" data-layout-label="Footer Content" data-type="block-field" data-updated-on="1425956444354" id="footerBlocks"><div class="row sqs-row"><div class="col sqs-col-12 span-12"><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-713fe491a2c303b33937"><div class="sqs-block-content"><h3>©2015 CODE &amp; CIRCUIT, LLC</h3><h3>36 MAIN STREET, AMESBURY, MASSACHUSETTS</h3></div></div></div></div></div>
+        </div>
+      </footer>
+
+    </div>
+
+    <script type="text/javascript" src="https://static1.squarespace.com/static/ta/52a74d9ae4b0253945d2aee9/922/scripts/combo/?site.js&helpers.js&sticky.js"></script>
+    
+    
+    
+    <script type="text/javascript" data-sqs-type="imageloader-bootstraper">(function() {if(window.ImageLoader) { window.ImageLoader.bootstrap(); }})();</script>
+<script>Squarespace.afterBodyLoad(Y);</script>
+
+  </body>
+</html>
