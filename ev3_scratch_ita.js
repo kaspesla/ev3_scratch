@@ -106,18 +106,18 @@ var SYSTEM_COMMAND = "SYSTEM_COMMAND";
 
 var frequencies = { "C4" : 262, "D4" : 294, "E4" : 330, "F4" : 349, "G4" : 392, "A4" : 440, "B4" : 494, "C5" : 523, "D5" : 587, "E5" : 659, "F5" : 698, "G5" : 784, "A5" : 880, "B5" : 988, "C6" : 1047, "D6" : 1175, "E6" : 1319, "F6" : 1397, "G6" : 1568, "A6" : 1760, "B6" : 1976, "C#4" : 277, "D#4" : 311, "F#4" : 370, "G#4" : 415, "A#4" : 466, "C#5" : 554, "D#5" : 622, "F#5" : 740, "G#5" : 831, "A#5" : 932, "C#6" : 1109, "D#6" : 1245, "F#6" : 1480, "G#6" : 1661, "A#6" : 1865 };
 
-var colors = [ "none", "black", "blue", "green", "yellow", "red", "white"];
+var colors = [ "nessuno", "nero", "blu", "verde", "giallo", "rosso", "bianco"];
 
 var IRbuttonNames = ['Top Left', 'Bottom Left', 'Top Right', 'Bottom Right', 'Top Bar'];
 var IRbuttonCodes = [1,            2,              3,          4,              9];
 
 var sensorPortsNames = [ "1", "2", "3", "4", "A", "B", "C", "D"];
 
-var sensorNames = { "7E" : "None", "7F" : "Port Error", "FF" : "Unknown", "7D" : "Initializing", "07" : "Large Motor", "08" : "Medium Motor", "10" : "Button Sensor", "1D" : "Light Sensor", "1E" : "Ultrasonic Sensor", "20" : "Gyro Sensor", "21" : "Infrared Sensor", "01" : "Button Sensor (NXT)", "02" : "Light Sensor (NXT)", "03" : "Sound Sensor", "04" : "Light/Color Sensor (NXT)", "05" : "Ultrasonic Sensor (NXT)", "06" : "Temperature Sensor (NXT)" };
+var sensorNames = { "7E" : "Nessuno", "7F" : "Porta sbagliata", "FF" : "Sconosciuto", "7D" : "Inizializzazione", "07" : "Motore grande", "08" : "Motore piccolo", "10" : "Sensore di pressione", "1D" : "Sensore di luce", "1E" : "Sensore ad ultrasuoni", "20" : "Giroscopio", "21" : "Sensore a infrarossi", "01" : "Button Sensor (NXT)", "02" : "Light Sensor (NXT)", "03" : "Sound Sensor", "04" : "Light/Color Sensor (NXT)", "05" : "Ultrasonic Sensor (NXT)", "06" : "Temperature Sensor (NXT)" };
 
 var port_Assignments = port_Assignments || [0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-var ledColors = {"off" : "00", "green" : "01", "red" : "02", "orange" : "03", "green flashing" : "04", "red flashing" : "05", "orange flashing" : "06", "green pulse" : "07", "red pulse" : "08", "orange pulse" : "09"}
+var ledColors = {"off" : "00", "verde" : "01", "rosso" : "02", "arancione" : "03", "verde lampeggiante" : "04", "rosso lampeggiante" : "05", "arancione lampeggiante" : "06", "verde pulsato" : "07", "rosso pulsato" : "08", "arancione pulsato" : "09"}
 
 var sound_volume = 20;
 
@@ -347,7 +347,7 @@ function getMotorBitsHexString(which)
         return "06";
     else if (which == "A+D")
         return "09";
-    else if (which == "all")
+    else if (which == "tutti")
         return "0F";
 
     return "00";
@@ -610,7 +610,7 @@ function receive_handler(data)
             if (num >= 0 && num < 7)
                 theResult = colors[num];
             else
-                theResult = "none";
+                theResult = "nessuno";
         }
     }
     else if (type == IR_SENSOR)
@@ -766,7 +766,7 @@ driveCallback = 0;
 
 function howStopCode(how)
 {
-    if (how == 'brake')
+    if (how == 'frena')
         return 1;
     else
         return 0;
@@ -958,7 +958,7 @@ function startMotors(which, speed)
     addToQueryQueue([DRIVE_QUERY, 0, null, motorCommand]);
 }
 
-function motorDegrees(which, speed, degrees, howStop)
+function motorDegrees(which, degrees, speed, howStop)
 {
     speed = capSpeed(speed);
 
@@ -1036,19 +1036,19 @@ function steeringControl(ports, what, duration, speed, callback)
     clearDriveTimer();
     var defaultSpeed = speed;
     var motorCommand = null;
-    if (what == 'forward')
+    if (what == 'avanti')
     {
         motorCommand = motor(ports, defaultSpeed);
     }
-    else if (what == 'reverse')
+    else if (what == 'indietro')
     {
         motorCommand = motor(ports, -1 * defaultSpeed);
     }
-    else if (what == 'right')
+    else if (what == 'in senso orario')
     {
         motorCommand = motor2(ports, defaultSpeed);
     }
-    else if (what == 'left')
+    else if (what == 'in senso antiorario')
     {
         motorCommand = motor2(ports, -1 * defaultSpeed);
     }
@@ -1084,12 +1084,12 @@ function readTouchSensorPort(port, callback)
 }
 */
 
-function readColorSensorPort(port, mode, callback)
+function readColorSensorPort(mode, port, callback)
 {
     var modeCode = AMBIENT_INTENSITY;
-    if (mode == 'reflected') { modeCode = REFLECTED_INTENSITY; }
-    if (mode == 'color') { modeCode = COLOR_VALUE; }
-    if (mode == 'RGBcolor') { modeCode = COLOR_RAW_RGB; }
+    if (mode == 'luce riflessa') { modeCode = REFLECTED_INTENSITY; }
+    if (mode == 'colore') { modeCode = COLOR_VALUE; }
+  //  if (mode == 'RGBcolor') { modeCode = COLOR_RAW_RGB; } //maybe deprecated
 
     var portInt = parseInt(port) - 1;
     readFromColorSensor(portInt, modeCode, callback);
@@ -1122,7 +1122,7 @@ function waitUntilDarkLinePort(port, callback)
 function readGyroPort(mode, port, callback)
 {
     var modeCode = GYRO_ANGLE;
-    if (mode == 'rate') { modeCode = GYRO_RATE; }
+    if (mode == 'velocità angolare') { modeCode = GYRO_RATE; }
 
     var portInt = parseInt(port) - 1;
 
@@ -1131,7 +1131,7 @@ function readGyroPort(mode, port, callback)
 
 function resetGyroPort(port, callback)
 {
-    motorsOff("all", "brake"); // brakes movement to reset gyro. Robot must be idle while resetting but maybe enforcing total brake is too much
+    motorsOff("tutti", "frena"); // brakes movement to reset gyro. Robot must be idle while resetting but maybe enforcing total brake is too much
 
     var portInt = parseInt(port) - 1;
 
@@ -1164,7 +1164,7 @@ function readFromMotor(mmode, which, callback)
 {
     var portInt = getMotorIndex(which);
     var mode = READ_MOTOR_POSITION; // position
-    if (mmode == 'speed')
+    if (mmode == 'velocità')
         mode = READ_MOTOR_SPEED;
 
     readFromAMotor(portInt, READ_FROM_MOTOR, mode, callback);
@@ -1217,7 +1217,7 @@ var connectionTimeout = connectionTimeout || null;
 
 function batteryAlert()
 {
-    alert("Your battery is getting low.");
+    alert("La batteria del brick si sta scaricando.");
 }
 
 function connectingOrConnected()
@@ -1434,9 +1434,9 @@ function(ext)
         startMotors(which, speed);
      }
 
-     ext.motorDegrees = function(which, speed, degrees, howStop)
+     ext.motorDegrees = function(which, degrees, speed, howStop)
      {
-        motorDegrees(which, speed, degrees, howStop);
+        motorDegrees(which, degrees, speed, howStop);
      }
 
      ext.playTone = function(tone, duration, callback)
@@ -1486,9 +1486,9 @@ function(ext)
      }
      */
 
-     ext.readColorSensorPort = function(port, mode, callback)
+     ext.readColorSensorPort = function(mode, port, callback)
      {
-        readColorSensorPort(port, mode, callback);
+        readColorSensorPort(mode, port, callback);
      }
 
 
@@ -1534,36 +1534,33 @@ function(ext)
      // Block and block menu descriptions
      var descriptor = {
      blocks: [
-              ["w", "drive %m.dualMotors %m.turnStyle %n seconds at speed %n",         "steeringControl",  "B+C", "forward", 3, 60],
-              [" ", "start motor %m.whichMotorPort speed %n",              "startMotors",      "B+C", 100],
-              [" ", "rotate motor %m.whichMotorPort speed %n by %n degrees then %m.brakeCoast",              "motorDegrees",      "A", 100, 360, "brake"],
-              [" ", "stop motors %m.whichMotorPort %m.brakeCoast",                       "motorsOff",     "all", "brake"],
-              [" ", "set LED %m.patterns",                                 "setLED",                 "green"],
-              ["h", "when button pressed on port %m.whichInputPort",       "whenButtonPressed","1"],
-              ["b", "button pressed %m.whichInputPort",                    "whenButtonPressed_b",   "1"],
-              ["h", "when IR remote %m.buttons pressed port %m.whichInputPort", "whenRemoteButtonPressed","Top Left", "1"],
-              ["w", "play note %m.note duration %n ms",                    "playTone",         "C5", 500],
-              ["w", "play frequency %n duration %n ms",                    "playFreq",         "262", 500],
-              [" ", "set brick's volume to %n",                    "setVolume",         20],
-              ["R", "light sensor %m.whichInputPort %m.lightSensorMode",   "readColorSensorPort",   "1", "color"],
-              ["R", "measure distance %m.whichInputPort",                  "readDistanceSensorPort",   "1"],
-              ["R", "remote button %m.whichInputPort",                     "readRemoteButtonPort",   "1"],
-              ["R", "motor %m.motorInputMode %m.whichMotorIndividual",     "readFromMotor",   "position", "A"],
-              ["R", "gyro  %m.gyroMode %m.whichInputPort",                 "readGyroPort",  "angle", "1"],
-              ["w", "reset gyro %m.whichInputPort", "resetGyroPort", "1"],
+              ["w", "muovi i motori %m.dualMotors %m.turnStyle per %n secondi alla velocità %n",         "steeringControl",  "B+C", "avanti", 3, 60],
+              [" ", "porta il motore %m.whichMotorPort alla velocità %n",              "startMotors",      "B+C", 100],
+              [" ", "ruota il motore %m.whichMotorPort di %n gradi alla velocità %n e poi %m.brakeCoast",              "motorDegrees",      "A", 360, 60, "frena"],
+              [" ", "ferma i motori %m.whichMotorPort e poi %m.brakeCoast",                       "motorsOff",     "tutti", "frena"],
+              [" ", "imposta LED Brick colore %m.patterns",                                 "setLED",                 "verde"],
+              ["h", "quando si preme il pulsante alla porta %m.whichInputPort", "whenButtonPressed", "1"],
+              ["b", "il pulsante alla porta %m.whichInputPort è premuto", "whenButtonPressed_b", "1"],
+              ["w", "suona la nota %m.note per %n ms",                    "playTone",         "C5", 500],
+              [" ", "porta il volume del brick a %n",                    "setVolume",         20],
+              ["R", "valore del sensore di luce in modalità %m.lightSensorMode alla porta %m.whichInputPort",   "readColorSensorPort",   "colore", "1"],
+              ["R", "misura della distanza alla porta %m.whichInputPort",                  "readDistanceSensorPort",   "1"],
+              ["R", "%m.motorInputMode del motore alla porta %m.whichMotorIndividual",     "readFromMotor",   "angolo", "A"],
+              ["R", "%m.gyroMode del giroscopio alla porta %m.whichInputPort",                 "readGyroPort",  "angolo", "1"],
+              ["w", "azzera il giroscopio alla porta %m.whichInputPort", "resetGyroPort", "1"],
                     ],
      "menus": {
-     "whichMotorPort":   ["A", "B", "C", "D", "A+D", "B+C", "all"],
+     "whichMotorPort":   ["A", "B", "C", "D", "A+D", "B+C", "tutti"],
      "whichMotorIndividual":   ["A", "B", "C", "D"],
      "dualMotors":       ["A+D", "B+C"],
-     "turnStyle":        ["forward", "reverse", "right", "left"],
-     "brakeCoast":       ["brake", "coast"],
-     "lightSensorMode":  ["reflected", "ambient", "color"],
-     "motorInputMode": ["position", "speed"],
-     "gyroMode": ["angle", "rate"],
+     "turnStyle":        ["avanti", "indietro", "in senso orario", "in senso antiorario"],
+     "brakeCoast":       ["frena", "in folle"],
+     "lightSensorMode":  ["luce riflessa", "luce ambientale", "colore"],
+     "motorInputMode": ["angolo", "velocità"],
+     "gyroMode": ["angolo", "velocità angolare"],
      "note":["C4","D4","E4","F4","G4","A4","B4","C5","D5","E5","F5","G5","A5","B5","C6","D6","E6","F6","G6","A6","B6","C#4","D#4","F#4","G#4","A#4","C#5","D#5","F#5","G#5","A#5","C#6","D#6","F#6","G#6","A#6"],
      "whichInputPort": ["1", "2", "3", "4"],
-     "patterns": ["off", "green", "red", "orange", "green flashing", "red flashing", "orange flashing", "green pulse", "red pulse", "orange pulse"],
+     "patterns": ["off", "verde", "rosso", "arancione", "verde lampeggiante", "rosso lampeggiante", "arancione lampeggiante", "verde pulsato", "rosso pulsato", "arancione pulsato"],
      "buttons": IRbuttonNames,
      },
      };
@@ -1571,11 +1568,15 @@ function(ext)
  //    ['w', 'wait until light sensor %m.whichInputPort detects black line',   'waitUntilDarkLinePort',   '1'],
  //    ['R', 'battery level',   'readBatteryLevel'],
  //  [' ', 'reconnect', 'reconnectToDevice'],
+ //              ["h", "when IR remote %m.buttons pressed port %m.whichInputPort", "whenRemoteButtonPressed","Top Left", "1"],
+ //              ["R", "remote button %m.whichInputPort",                     "readRemoteButtonPort",   "1"],
+ //              ["w", "suona la frequenza %n Hz per %n ms",                    "playFreq",         "262", 500],
+
 
      var serial_info = {type: 'serial'};
-     ScratchExtensions.register('EV3 Control', descriptor, ext, serial_info);
-     console_log(' registered extension. theEV3Device:' + theEV3Device);
+     ScratchExtensions.register('EV3 Kano', descriptor, ext, serial_info);
+     console_log(' estensione registrata. EV3 collegato:' + theEV3Device);
 
-     console_log("EV3ScratchAlreadyLoaded: " + EV3ScratchAlreadyLoaded);
+     console_log("Estensione EV3Scratch già caricato: " + EV3ScratchAlreadyLoaded);
      EV3ScratchAlreadyLoaded = true;
 })({});
