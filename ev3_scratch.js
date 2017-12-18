@@ -1393,7 +1393,12 @@ function(ext)
          theEV3Device = null;
          */
      };
-     
+ 
+     ext._stop = function()
+     {
+         motorsOff("all", "coast");
+     }
+ 
      ext.startMotors = function(which, speed)
      {
         startMotors(which, speed);
