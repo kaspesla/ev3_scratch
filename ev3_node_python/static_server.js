@@ -1488,6 +1488,10 @@ function steeringControl(ports, what, duration, callback)
     {
         motorCommand = motor2(ports, -1 * defaultSpeed);
     }
+    else
+    {
+        return;
+    }
     
     addToQueryQueue([DRIVE_QUERY_DURATION, duration, callback, motorCommand + "|" + ports]); // special handle so we can stop the right motors
 }

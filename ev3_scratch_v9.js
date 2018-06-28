@@ -1499,7 +1499,6 @@ function(ext)
               ["w", "play frequency %n duration %n ms",                    "playFreq",         "262", 500],
               ["R", "light sensor %m.whichInputPort %m.lightSensorMode",   "readColorSensorPort",   "1", "color"],
               ["R", "measure distance %m.whichInputPort",                  "readDistanceSensorPort",   "1"],
-              ["R", "measure temp %m.whichInputPort",                       "readDistanceSensorPort",   "1"],
               ["R", "remote button %m.whichInputPort",                     "readRemoteButtonPort",   "1"],
               ["R", "motor %m.motorInputMode %m.whichMotorIndividual",     "readFromMotor",   "position", "A"],
                     ],
