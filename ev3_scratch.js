@@ -216,17 +216,17 @@ function playStartUpTones()
     var tonedelay = 1000;
     setTimeout(function()
                       {
-                      playFreqM2M(262, 100);
+                      playFreq(262, 100, function(){});
                       }, tonedelay);
     
     setTimeout(function()
                       {
-                      playFreqM2M(392, 100);
+                      playFreq(392, 100, function(){});
                       }, tonedelay+150);
     
     setTimeout(function()
                       {
-                      playFreqM2M(523, 100);
+                      playFreq(523, 100, function(){});
                       }, tonedelay+300);
 }
 
@@ -732,21 +732,6 @@ function motor2(which, speed)
                                         + SET_MOTOR_START + motorBitField);
     
     return motorsOnCommand;
-}
-
-
-
-function playFreqM2M(freq, duration)
-{
-    console_log("playFreqM2M duration: " + duration + " freq: " + freq);
-    var volume = 100;
-    var volString = getPackedOutputHexString(volume, 1);
-    var freqString = getPackedOutputHexString(freq, 2);
-    var durString = getPackedOutputHexString(duration, 2);
-    
-    var toneCommand = createMessage(DIRECT_COMMAND_PREFIX + PLAYTONE + volString + freqString + durString);
-    
-    addToQueryQueue([TONE_QUERY, 0, null, toneCommand]);
 }
 
 function clearDriveTimer()
