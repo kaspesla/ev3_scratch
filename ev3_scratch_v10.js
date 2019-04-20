@@ -508,7 +508,6 @@ function executeQueryQueue()
                                                    if (duration > 0) // allow zero duration to run motors asynchronously
                                                    {
                                                         motorsStop(stopMotors, 'coast'); // xxx
-                                                        startMotors(stopMotors, 0);  // workaround for bug
                                                    }
                                                    if (callback)
                                                         callback();
@@ -1014,7 +1013,6 @@ function motorsOff(which, how)
 {
     clearDriveTimer();
     motorsStop(which, how);
-    startMotors(which, 0); // workaround for bug
 }
 
 function steeringControl(ports, what, duration, callback)
